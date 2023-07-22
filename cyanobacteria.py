@@ -10,13 +10,13 @@ def Cyanobacteria_UAv1p0():
     global Module_Cyanobacteria
     ModuleTemp = mcmodules.Module()
     ModuleTemp.define_name('Cyanobacteria AE v1.0')
-    ModuleTemp.add_input('Surface_Temperature')
-    ModuleTemp.add_input('Surface_Pressure')
+    ModuleTemp.add_input('Temperature')
+    ModuleTemp.add_input('Pressure')
     ModuleTemp.add_output('Suitability')
     def _execute(self):
         global Surface_Pressure, Surface_Temperature, GSuitability
         #breakpoint()
-        if keyparams.Surface_Pressure > 0.07 and keyparams.Surface_Temperature < 343. and keyparams.Surface_Temperature > 273.:
+        if keyparams.Pressure > 0.07 and keyparams.Temperature < 343. and keyparams.Temperature > 273.:
             keyparams.Suitability=1.0
         else:
             keyparams.Suitability=0.0
