@@ -205,17 +205,20 @@ mod_labels={}
 
 for jj in np.arange(nmods):
     mod_labels[jj]=Modules[jj].name
+    print('--------------------------------------------------------------------------------')
+    print('Identifying input connections for module ', Modules[jj].name)
 
     for ip in Modules[jj].input_parameters:
 # For each input parameter, find all modules with matching output parameters:
+        print('......................................................................')
         print('Scanning for output parameters matching the input parameter:', ip)
 
         # Cycle through all modules:
         for module_scanned in np.arange(nmods):
 
             # Check if the input parameter matches the output parameters of the given module:
-            if any(x in ip for x in Modules[module_scanned].output_parameters): #<<< Example
-                print('Input/output Match found in module: ', Modules[module_scanned].name)
+            if any(x == ip for x in Modules[module_scanned].output_parameters): #<<< Example
+                print(' + Input/output Match found in module: ', Modules[module_scanned].name)
                 G.addEdge(module_scanned,jj,label=ip.replace('_',' '))
                 edge_labels[(module_scanned,jj)]=ip.replace('_',' ')
 
