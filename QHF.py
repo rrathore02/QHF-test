@@ -120,9 +120,15 @@ MetabolismFile = config['Metabolism']['MetabolismFile']
 MetabolismFile = os.path.splitext(MetabolismFile)[0] # this removes any .py extension
 MetabolismModule = config['Metabolism']['MetabolismModule']
 
+VisualizationFile = config['Visualization']['VisualizationFile']
+VisualizationFile = os.path.splitext(VisualizationFile)[0] # this removes any .py extension
+VisualizationModule = config['Visualization']['VisualizationModule']
+
+
 print(' [ Configuration file: ]', ConfigID)
 print(' [ Habitat Module: ]', HabitatModule)
 print(' [ Metabolism Module: ]', MetabolismModule)
+print(' [ Visualization Module: ]', VisualizationModule)
 
 
 #===================================================================
@@ -141,6 +147,12 @@ ModuleHabitability = metabolism_module_load()
 Modules.append(ModuleHabitability)
 # Determine the total number of modules loaded
 nmods = len(Modules)
+
+visualization_file = __import__(VisualizationFile)
+habitat_module_load = getattr(visualization_file, str(VisualizationModule))
+VisualizationModule = habitat_module_load()
+
+#from visexoplanet import *
 
 
 #=================================================================
@@ -232,6 +244,7 @@ Temperature_Distribution = []
 Pressure_Distribution = []
 BondAlbedo_Distribution = []
 GreenHouse_Distribution = []
+Depth_Distribution = []
 
 
 for ii in np.arange(N_iter):
@@ -246,6 +259,7 @@ for ii in np.arange(N_iter):
     BondAlbedo_Distribution.append(keyparams.Bond_Albedo)
     GreenHouse_Distribution.append(keyparams.GreenhouseWarming)
     Pressure_Distribution.append(keyparams.Surface_Pressure)
+    Depth_Distribution.append(keyparams.Depth)
     runid = keyparams.runid
 
 print('Monte Carlo loop completed')
@@ -270,5 +284,4 @@ plt.show()
 
 #========================================================
 # Visualization of the Results
-from visexoplanet import *
 QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,runid)
