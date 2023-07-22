@@ -1,0 +1,15 @@
+Surface_Pressure = None
+Suitability = None
+Surface_Temperature = None
+Bond_Albedo = None
+GreenhouseWarming = None
+Surface_Pressure = None
+Bond_Albedo = None
+Equilibrium_Temp = None
+Semi_major_axis = None
+Orbital_Period = None
+Eccentricity = None
+Stellar_Mass = None
+Stellar_Age = None
+Luminosity = None
+runid = ''
