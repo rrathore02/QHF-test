@@ -62,24 +62,6 @@ def marsmodules():
     ModuleTemp.activate()
     ModuleOrbit = ModuleTemp
     m_id=m_id+1
-
-#===============================================
-    global ModulePressure
-    global Surface_Pressure
-    ModuleTemp = mcmodules.Module()
-    ModuleTemp.define_name('Surface \n Pressure Prior')
-    ModuleTemp.add_output('Surface_Pressure')
-    def _execute(self):
-        #global Surface_Pressure
-        mu_p, sigma_p = 0.007, 0.002 # mean and standard deviation, pressure in units of atm
-        keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)
-        keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
-    ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
-    ModuleTemp.define_ID(m_id)
-    ModuleTemp.activate()
-    ModulePressure = ModuleTemp
-    m_id=m_id+1
-
 #===============================================
     global ModulePlanetPriors
     ModuleTemp = mcmodules.Module()
@@ -88,6 +70,9 @@ def marsmodules():
     ModuleTemp.add_output('Planet_Mass')
     ModuleTemp.add_output('Mantle_Composition')
     ModuleTemp.add_output('Volatile_Content')
+    ModuleTemp.add_output('Depth')  # Parameter sampling the depth in meters - from 0. (surface) to 5,000
+    ModuleTemp.add_output('Density')
+    ModuleTemp.add_output('Gravity')
     def _execute(self):
         keyparams.runid = 'Mars AE v0.1'
         #global Planet_Mass_Mstar,  Mantle_Composition
@@ -98,10 +83,36 @@ def marsmodules():
         unitconversion = MEarth / Msol # Convert Solar mass to Earth mass
         keyparams.Planet_Mass = keyparams.Planet_Mass_Mstar * keyparams.Stellar_Mass * unitconversion # Planet mass in Earth masses
         keyparams.Mantle_Composition = [0.7,0.3] # Fe / Si / Mg mass ratio
+        keyparams.Gravity= 3.71 # m/s2 surface gravity
+        keyparams.Density = 2582.00   # kg/m3  Density of the crust
+        keyparams.Depth = np.random.uniform(low=0., high=5000.) # Depth in meter
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.activate()
     ModulePlanetPriors = ModuleTemp
+    m_id=m_id+1
+
+
+#===============================================
+    global ModulePressure
+    global Surface_Pressure
+    ModuleTemp = mcmodules.Module()
+    ModuleTemp.define_name('Surface \n Pressure Prior')
+    ModuleTemp.add_input('Depth')
+    ModuleTemp.add_input('Gravity')
+    ModuleTemp.add_input('Density')
+    ModuleTemp.add_output('Surface_Pressure')
+    ModuleTemp.add_output('Internal_Pressure')
+    def _execute(self):
+        mu_p, sigma_p = 0.007, 0.002 # mean and standard deviation, pressure in units of atm
+        keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)
+        keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
+        keyparams.Internal_Pressure = keyparams.Surface_Pressure + (keyparams.Depth * keyparams.Gravity * keyparams.Density)/101325.  # Pressure at Depth equals atmospheric pressure plus density times gravity times column height (i.e., depth)
+        keyparams.Pressure = keyparams.Internal_Pressure
+    ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
+    ModuleTemp.define_ID(m_id)
+    ModuleTemp.activate()
+    ModulePressure = ModuleTemp
     m_id=m_id+1
 
 
@@ -175,16 +186,13 @@ def marsmodules():
     global ModuleInterior
     ModuleTemp = mcmodules.Module()
     ModuleTemp.define_name('Interior \n Processes')
-    #ModuleTemp.add_input('Equilibrium_Temp')
-    ModuleTemp.add_input('Planet_Mass')
-    ModuleTemp.add_input('Mantle_Composition')
-    ModuleTemp.add_input('Volatile_Content')
-    ModuleTemp.add_output('Outgassing')
-    ModuleTemp.add_output('Atm. Sinks')
+    ModuleTemp.add_input('Surface_Temperature')
+    ModuleTemp.add_output('Temperature')
     def _execute(self):
-        mu_gh, sigma_gh = 110., 50. # mean and standard deviation, in K, of Greenhouse effect
-        keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)
-        keyparams.Surface_Temperature = keyparams.GreenhouseWarming + keyparams.Equilibrium_Temp
+        mu_tgrad, sigma_tgrad = 0.2, 0.05 # mean and standard deviation, in K/m of the temperature gradient
+        keyparams.Thermal_Gradient = np.random.normal(mu_tgrad, sigma_tgrad, 1)
+        keyparams.Interior_Temperature= keyparams.Surface_Temperature + keyparams.Depth + keyparams.Thermal_Gradient
+        keyparams.Temperature = keyparams.Interior_Temperature
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.visualize()
@@ -195,4 +203,4 @@ def marsmodules():
 #===============================================
 
 
-    return [ModuleStar, ModuleAlbedo, ModuleOrbit, ModulePressure, ModuleEqTemperature, ModuleGreenhouse,ModulePlanetPriors] #,ModuleHabitability,Cyanobacteria_UAv1p0]
+    return [ModuleStar, ModuleAlbedo, ModuleOrbit, ModulePressure, ModuleEqTemperature, ModuleGreenhouse,ModulePlanetPriors,ModuleInterior] #,ModuleHabitability,Cyanobacteria_UAv1p0]
