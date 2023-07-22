@@ -149,8 +149,8 @@ Modules.append(ModuleHabitability)
 nmods = len(Modules)
 
 visualization_file = __import__(VisualizationFile)
-habitat_module_load = getattr(visualization_file, str(VisualizationModule))
-VisualizationModule = habitat_module_load()
+VisualizationModule = getattr(visualization_file, str(VisualizationModule))
+#= habitat_module_load()
 
 #from visexoplanet import *
 
@@ -284,4 +284,4 @@ plt.show()
 
 #========================================================
 # Visualization of the Results
-QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,runid)
+VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,runid)
