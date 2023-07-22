@@ -8,5 +8,8 @@ This is the repository of the QHF python framework developed as an illustration 
 
 
 
+Example execution:
+python QHF.py trappist1e.cfg
+
 -------------------------------------------------------------------------------------------------------
 Acknolwedgegements: The development of QHF was directly supported by the Alien Earths project funded by the NASA ICAR program.
