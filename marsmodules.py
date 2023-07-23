@@ -19,7 +19,7 @@ def marsmodules():
     ModuleTemp.activate()
     def _execute(self):
         #global Bond_Albedo
-        mu_albedo, sigma_albedo = 0.3, 0.13 # mean and standard deviation
+        mu_albedo, sigma_albedo = 0.25, 0.04 # mean and standard deviation, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html (std dev assumed to account for local surface albedo variations)
         keyparams.Bond_Albedo = np.random.normal(mu_albedo, sigma_albedo, 1)
 
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
@@ -36,11 +36,11 @@ def marsmodules():
     ModuleTemp.activate()
     def _execute(self):
         #global Luminosity, Stellar_Mass, Stellar_Age
-        keyparams.Luminosity = mu_st_lum, sigma_st_lum = 0.000553, 1.92e-5 # mean and standard deviation, Agol et al. 2021 Planetary Science Journal, 2:1, Table 7
+        keyparams.Luminosity = mu_st_lum, sigma_st_lum = 1.0, 0.00001 # Solar luminosity is 1.0 in Lsol units
         keyparams.Luminosity = np.random.normal(mu_st_lum, sigma_st_lum, 1)
-        mu_st_mass, sigma_st_mass = 0.0898, 0.0023 # mean and standard deviation, Mann et al. 2019
+        mu_st_mass, sigma_st_mass = 1.0000, 0.000001 # mean and standard deviation, Solar mass in solar units
         keyparams.Stellar_Mass = np.random.normal(mu_st_mass, sigma_st_mass, 1)
-        keyparams.Stellar_Age = 0.00 # average eccentricity
+        keyparams.Stellar_Age = 4.567 # average eccentricity
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleStar = ModuleTemp
     m_id=m_id+1
@@ -54,9 +54,9 @@ def marsmodules():
     ModuleTemp.add_output('Eccentricity')
     def _execute(self):
         #global Semi_major_axis, Orbital_Period, Eccentricity
-        keyparams.Semi_major_axis = 0.03849 # sma in astronomical units
-        keyparams.Orbital_Period = 9.207540 # period in days, from Agol et al. 2021, Table 2
-        keyparams.Eccentricity = 0.00 # average eccentricity, not determined
+        keyparams.Semi_major_axis = 1.524 # sma in astronomical units
+        keyparams.Orbital_Period = 686.980 # period in days, from Agol et al. 2021, Table 2
+        keyparams.Eccentricity = 0.0935 # average eccentricity, not determined
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.activate()
@@ -76,14 +76,14 @@ def marsmodules():
     def _execute(self):
         keyparams.runid = 'Mars AE v0.1'
         #global Planet_Mass_Mstar,  Mantle_Composition
-        mu_p, sigma_p = 2.313e-5, 0.043e-5 # mean and standard deviation in Mstar, from Agol et al. 2021 Table 2
+        mu_p, sigma_p = 3.2260e-07, 0.00 # mean and standard deviation in Mstar, from https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html
         keyparams.Planet_Mass_Mstar = np.random.normal(mu_p, sigma_p, 1) # Planet mass in units of stellar mass
         Msol = 1.98910e30 # Solar mass in kilograms
         MEarth = 5.9736e24 # Earth mass in kilograms
         unitconversion = MEarth / Msol # Convert Solar mass to Earth mass
         keyparams.Planet_Mass = keyparams.Planet_Mass_Mstar * keyparams.Stellar_Mass * unitconversion # Planet mass in Earth masses
-        keyparams.Mantle_Composition = [0.7,0.3] # Fe / Si / Mg mass ratio
-        keyparams.Gravity= 3.71 # m/s2 surface gravity
+        #keyparams.Mantle_Composition = [0.7,0.3] # Fe / Si / Mg mass ratio
+        keyparams.Gravity= 3.73 # m/s2 surface gravity
         keyparams.Density = 2582.00   # kg/m3  Density of the crust
         keyparams.Depth = np.random.uniform(low=0., high=5000.) # Depth in meter
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
@@ -155,7 +155,7 @@ def marsmodules():
     ModuleTemp.define_ID(m_id)
     ModuleTemp.visualize()
     ModuleTemp.activate()
-    ModuleGreenhouse = ModuleTemp
+    #ModuleGreenhouse = ModuleTemp
     m_id=m_id+1
 
 #===============================================
@@ -169,7 +169,7 @@ def marsmodules():
     ModuleTemp.add_output('Surface_Temperature')
     def _execute(self):
         #global Surface_Temperature, GreenhouseWarming
-        mu_alpha, sigma_alpha = 0.95, 0.01 # mean and standard deviation of alpha, the key parameter of the single-layer leaky greenhouse model.
+        mu_alpha, sigma_alpha = 0.1, 0.02 # mean and standard deviation of alpha, the key parameter of the single-layer leaky greenhouse model.
         alpha = np.random.normal(mu_alpha, sigma_alpha, 1)
         alpha = np.clip(alpha, 0.,1.0)
         keyparams.GreenhouseWarming =  keyparams.Equilibrium_Temp * (2.0/(2.0-alpha))**(1/4.) - keyparams.Equilibrium_Temp
@@ -178,7 +178,7 @@ def marsmodules():
     ModuleTemp.define_ID(m_id)
     ModuleTemp.visualize()
     ModuleTemp.activate()
-    #ModuleGreenhouse = ModuleTemp
+    ModuleGreenhouse = ModuleTemp
     m_id=m_id+1
 
 
@@ -189,7 +189,7 @@ def marsmodules():
     ModuleTemp.add_input('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
-        mu_tgrad, sigma_tgrad = 0.2, 0.05 # mean and standard deviation, in K/m of the temperature gradient
+        mu_tgrad, sigma_tgrad = 0.02, 0.05 # mean and standard deviation, in K/m of the temperature gradient
         keyparams.Thermal_Gradient = np.random.normal(mu_tgrad, sigma_tgrad, 1)
         keyparams.Interior_Temperature= keyparams.Surface_Temperature + keyparams.Depth + keyparams.Thermal_Gradient
         keyparams.Temperature = keyparams.Interior_Temperature
