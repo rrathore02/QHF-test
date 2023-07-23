@@ -67,6 +67,7 @@ def TRAPPIST1eModules():
     ModuleTemp = mcmodules.Module()
     ModuleTemp.define_name('Surface \n Pressure Prior')
     ModuleTemp.add_output('Surface_Pressure')
+    ModuleTemp.add_output('Pressure')
     def _execute(self):
         #global Surface_Pressure
         mu_p, sigma_p = 5.0, 2.0 # mean and standard deviation
@@ -134,6 +135,7 @@ def TRAPPIST1eModules():
     ModuleTemp.add_input('Mantle_Composition')
     ModuleTemp.add_input('Volatile_Content')
     ModuleTemp.add_output('Surface_Temperature')
+    ModuleTemp.add_output('Temperature')
     def _execute(self):
         #global Surface_Temperature, GreenhouseWarming
         mu_gh, sigma_gh = 150., 30. # mean and standard deviation, in K, of Greenhouse effect
@@ -155,6 +157,7 @@ def TRAPPIST1eModules():
     ModuleTemp.add_input('Mantle_Composition')
     ModuleTemp.add_input('Volatile_Content')
     ModuleTemp.add_output('Surface_Temperature')
+    ModuleTemp.add_output('Temperature')
     def _execute(self):
         #global Surface_Temperature, GreenhouseWarming
         mu_alpha, sigma_alpha = 0.5, 0.15 # mean and standard deviation of alpha, the key parameter of the single-layer leaky greenhouse model.
