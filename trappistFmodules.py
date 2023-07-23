@@ -72,6 +72,7 @@ def TRAPPIST1fModules():
         mu_p, sigma_p = 1.0, 0.5 # mean and standard deviation, pressure in units of atm
         keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)
         keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
+        keyparams.Pressure = keyparams.Surface_Pressure
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.activate()
@@ -161,6 +162,7 @@ def TRAPPIST1fModules():
         alpha = np.clip(alpha, 0.,1.0)
         keyparams.GreenhouseWarming =  keyparams.Equilibrium_Temp * (2.0/(2.0-alpha))**(1/4.) - keyparams.Equilibrium_Temp
         keyparams.Surface_Temperature = keyparams.Equilibrium_Temp + keyparams.GreenhouseWarming
+        keyparams.Temperature = keyparams.Surface_Temperature
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.visualize()
@@ -183,6 +185,7 @@ def TRAPPIST1fModules():
         mu_gh, sigma_gh = 110., 50. # mean and standard deviation, in K, of Greenhouse effect
         keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)
         keyparams.Surface_Temperature = keyparams.GreenhouseWarming + keyparams.Equilibrium_Temp
+        keyparams.Temperature = keyparams.Surface_Temperature
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.visualize()
