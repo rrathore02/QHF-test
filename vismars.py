@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,runid):
+def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, runid):
     if screen:
         # Scaling factor
         sf = 1.0
@@ -24,12 +24,12 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
         labeloffset=-0.05
 
     ax = plt.axes(projection='3d')#,figsize=(4.00, 2.00), dpi=400)
-    ax.scatter3D(Temperature_Distribution, Pressure_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=0.7,alpha=0.5);
-    if screen: ax.scatter3D(Temperature_Distribution, Pressure_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=4.9,alpha=0.1);
+    ax.scatter3D(Temperature_Distribution, Depth_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=0.7,alpha=0.5);
+    if screen: ax.scatter3D(Temperature_Distribution, Depth_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=4.9,alpha=0.1);
     ax.set_xlabel('Surface Temperature [K]')
     #ax.set_xrange(220,450)
     ax.axes.set_xlim3d(left=220, right=450)
-    ax.set_ylabel('Surface Pressure [bar]')
+    ax.set_ylabel('Depth [m]')
     ax.set_zlabel('Habitat Suitability')
     ax.set_title(keyparams.runid + ' | S = %.2f' % np.mean(Suitability_Distribution),fontsize=10*sf,color=labelcolor)
     #ax.text(0.02,0.02,0.02, 'Average Suitability %.2f' % np.mean(Suitability_Distribution),fontsize=10*sf,color=labelcolor,transform=ax.transAxes)
