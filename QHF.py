@@ -125,6 +125,8 @@ VisualizationFile = os.path.splitext(VisualizationFile)[0] # this removes any .p
 VisualizationModule = config['Visualization']['VisualizationModule']
 
 
+NumProbes = config['Sampling']['NumProbes']
+
 print(' [ Configuration file: ]', ConfigID)
 print(' [ Habitat Module: ]', HabitatModule)
 print(' [ Metabolism Module: ]', MetabolismModule)
@@ -248,33 +250,64 @@ Pressure_Distribution = []
 BondAlbedo_Distribution = []
 GreenHouse_Distribution = []
 Depth_Distribution = []
+SavedParameters = []
 
+N_probes = 100
 
-for ii in np.arange(N_iter):
-    keyparams.runid=''
-    for mi in np.arange(len(topsorted)):
-        # Execute
-        print('Executing ',Modules[topsorted[mi]].name)
-        Modules[topsorted[mi]].execute()
+Suitability_Plot = []
+Variable = []
 
-    Suitability_Distribution.append(keyparams.Suitability)
-    Temperature_Distribution.append(keyparams.Surface_Temperature)
-    BondAlbedo_Distribution.append(keyparams.Bond_Albedo)
-    GreenHouse_Distribution.append(keyparams.GreenhouseWarming)
-    Pressure_Distribution.append(keyparams.Surface_Pressure)
-    Depth_Distribution.append(keyparams.Depth)
-    runid = keyparams.runid
+# If there is a parameter to study
+for keyparams.ProbeIndex in np.arange(np.float(NumProbes)):  # Index of the parameter space locations to sample. This value is passed on to every module.
+    print('Probing location ', keyparams.ProbeIndex)
+# Monte Carlo loop itself:
+    for ii in np.arange(N_iter):      # Number of iterations
+        keyparams.runid=''
+        for mi in np.arange(len(topsorted)):     # Step through and executed the modules in the topologically sorted order
+            # Execute
+            print('Executing ',Modules[topsorted[mi]].name)
+            Modules[topsorted[mi]].execute()
 
-print('Monte Carlo loop completed')
-print('Runid: ' + keyparams.runid)
+        Suitability_Distribution.append(keyparams.Suitability)
+        #Temperature_Distribution.append(keyparams.Surface_Temperature)
+        Temperature_Distribution.append(keyparams.Temperature)
+        BondAlbedo_Distribution.append(keyparams.Bond_Albedo)
+        GreenHouse_Distribution.append(keyparams.GreenhouseWarming)
+        Pressure_Distribution.append(keyparams.Surface_Pressure)
+        Depth_Distribution.append(keyparams.Depth)
+        runid = keyparams.runid
 
-print('Average Suitability %.2f' % np.mean(Suitability_Distribution))
+    print('Monte Carlo loop completed')
+    print('Runid: ' + keyparams.runid)
+    This_Suitability = np.mean(Suitability_Distribution)
+    print('Average Suitability %.2f' % This_Suitability)
+    Suitability_Plot.append(This_Suitability)
+    Variable.append(keyparams.Depth)
+    SavedParameters.append(keyparams)
 
 # ==============================
 # Now visualize the graph to allow verification of the connections
 # ==============================
 node_colors=[]
 node_sizes={}
+
+fig, ax = plt.subplots(figsize=(3.00, 6.00), dpi=400)
+#ax.facecolor(bkgcolor)
+#ax.edgecolor(selected_edgecolor)
+# Add frame:
+#for zz in np.arange(int(NumProbes)):
+ax.set_xlim([0,1])
+ax.set_ylim([1000,0])
+#ax.plot(Suitability_Plot[zz],SavedParameters[zz].Depth, marker='o',alpha=0.8,color='lightblue',markersize=3)
+ax.plot(Suitability_Plot,Variable, marker='o',alpha=0.8,color='lightblue',markersize=1.1)
+#ax = G.visualize()
+#plt.text(0.02,0.02, 'Average Suitability %.2f' % np.mean(Suitability_Distribution),fontsize=4*sf,color=labelcolor,transform=ax.transAxes)
+ax.set_title('Habitat Suitability: '+runid)
+ax.set_xlabel('Depth [m]')
+ax.set_ylabel('Probability of Habitat Suitability ')
+plt.show()
+
+breakpoint()
 
 
 fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
@@ -287,4 +320,4 @@ plt.show()
 
 #========================================================
 # Visualization of the Results
-VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,runid)
+VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, runid)
