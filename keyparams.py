@@ -19,4 +19,6 @@ Thermal_Gradient = None
 Internal_Pressure = None
 Gravity = None
 Density = None
+ProbeNum = None
+AvgSuitability = None
 runid = ''
