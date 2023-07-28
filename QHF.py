@@ -291,23 +291,6 @@ for keyparams.ProbeIndex in np.arange(np.float(NumProbes)):  # Index of the para
 node_colors=[]
 node_sizes={}
 
-fig, ax = plt.subplots(figsize=(3.00, 6.00), dpi=400)
-#ax.facecolor(bkgcolor)
-#ax.edgecolor(selected_edgecolor)
-# Add frame:
-#for zz in np.arange(int(NumProbes)):
-ax.set_xlim([0,1])
-ax.set_ylim([1000,0])
-#ax.plot(Suitability_Plot[zz],SavedParameters[zz].Depth, marker='o',alpha=0.8,color='lightblue',markersize=3)
-ax.plot(Suitability_Plot,Variable, marker='o',alpha=0.8,color='lightblue',markersize=1.1)
-#ax = G.visualize()
-#plt.text(0.02,0.02, 'Average Suitability %.2f' % np.mean(Suitability_Distribution),fontsize=4*sf,color=labelcolor,transform=ax.transAxes)
-ax.set_title('Habitat Suitability: '+runid)
-ax.set_xlabel('Depth [m]')
-ax.set_ylabel('Probability of Habitat Suitability ')
-plt.show()
-
-breakpoint()
 
 
 fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
@@ -320,4 +303,4 @@ plt.show()
 
 #========================================================
 # Visualization of the Results
-VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, runid)
+VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, runid,Suitability_Plot,Variable)
