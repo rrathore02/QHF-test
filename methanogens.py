@@ -3,16 +3,19 @@ import types
 import keyparams
 import numpy as np
 
-#===========[ Cyanobacteria ]======================
-def LiquidWater_UAv1p0():
-    global Module_LiquidWater
+#===========[ Methanogens Metabolism File for QHF  ]======================
+
+# --- Initial version, Daniel Apai, Aug 1, 2023
+#=========================================================================
+def Methanogens_AEv1p0():
+    global Module_Methanogens
     ModuleTemp = mcmodules.Module()
-    ModuleTemp.define_name('Liquid Water AE v1.0')
-    ModuleTemp.add_input('Surface_Temperature')
-    ModuleTemp.add_input('Surface_Pressure')
+    ModuleTemp.define_name('Methanogens AE v1.0')
+    ModuleTemp.add_input('Temperature')
+    ModuleTemp.add_input('Pressure')
     ModuleTemp.add_output('Suitability')
     def _execute(self):
-        if keyparams.Pressure > 0.07 and keyparams.Temperature < 373. and keyparams.Temperature > 273.:
+        if keyparams.Pressure > 0.07 and keyparams.Temperature < (273.25+122.) and keyparams.Temperature > (273.25-16.):
             keyparams.Suitability=1.0
         else:
             keyparams.Suitability=0.0
@@ -24,5 +27,5 @@ def LiquidWater_UAv1p0():
 
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.activate()
-    Module_LiquidWater = ModuleTemp
-    return Module_LiquidWater
+    Module_Methanogens = ModuleTemp
+    return Module_Methanogens
