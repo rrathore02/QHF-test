@@ -12,8 +12,6 @@ def LiquidWater_UAv1p0():
     ModuleTemp.add_input('Surface_Pressure')
     ModuleTemp.add_output('Suitability')
     def _execute(self):
-        #global Surface_Pressure, Surface_Temperature, GSuitability
-        #breakpoint()
         if keyparams.Pressure > 0.07 and keyparams.Temperature < 373. and keyparams.Temperature > 273.:
             keyparams.Suitability=1.0
         else:
@@ -22,17 +20,9 @@ def LiquidWater_UAv1p0():
         # Key parameters are returned to the main function, allowing the Visualization
         # of the results. Below a dictionary is defined with the relevant values
         keyparams.runid = keyparams.runid+' | '+ ModuleTemp.name
-        #KeyParameters={
-        #    'Suitability' : keyparams.Suitability,
-    #        'Surface_Temperature' : np.ndarray.item(keyparams.Surface_Temperature),
-    #        'Surface_Pressure' : np.ndarray.item(keyparams.Surface_Pressure),
-    #        'Bond_Albedo' : np.ndarray.item(keyparams.Bond_Albedo),
-    #        'GreenhouseWarming' : np.ndarray.item(keyparams.GreenhouseWarming),
-    ##        }
-        return #KeyParameters
+        return
 
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.activate()
-    #ModuleTemp.define_ID(m_id)
     Module_LiquidWater = ModuleTemp
     return Module_LiquidWater
