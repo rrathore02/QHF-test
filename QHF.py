@@ -306,4 +306,4 @@ plt.show()
 
 #========================================================
 # Visualization of the Results
-VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, runid,Suitability_Plot,Variable)
+VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, keyparams.runid,Suitability_Plot,Variable)
