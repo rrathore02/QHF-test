@@ -1,7 +1,7 @@
 import sys, os
-sys.path.append('./habitats')
-sys.path.append('./metabolisms')
-sys.path.append('./visualizations')
+sys.path.append('./Habitats')
+sys.path.append('./Metabolisms')
+sys.path.append('./Analyses')
 from collections import defaultdict
 import math
 import numpy as np
