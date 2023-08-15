@@ -141,6 +141,7 @@ def TRAPPIST1eModules():
         mu_gh, sigma_gh = 150., 30. # mean and standard deviation, in K, of Greenhouse effect
         keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)
         keyparams.Surface_Temperature = keyparams.GreenhouseWarming + keyparams.Equilibrium_Temp
+        keyparams.Temperature = keyparams.Surface_Temperature
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.visualize()
