@@ -63,8 +63,10 @@ class GraphVisualization:
         G = nx.DiGraph()
         G.add_edges_from(self.visual)
         pos = nx.spring_layout(G)
-        #Adjust colors: blue for priors (no input parameters), lightblue for the derived values
-        node_colors = [prior_node_color if len(Modules[node].input_parameters) == 0 else other_node_color for node in G]
+        #Adjust colors: blue for priors (no input parameters), lightblue for the derived values, green for final comparison w metabolism model
+        #node_colors = [prior_node_color if len(Modules[node].input_parameters) == 0 else other_node_color for node in G]
+        node_colors = [prior_node_color if len(Modules[node].input_parameters) == 0 else metabolism_node_color if 'Suitability' in Modules[node].output_parameters else other_node_color for node in G]
+        #node_colors = [ else zero for node in G]
         if screen: nx.draw_networkx(G,pos, arrows=False,arrowsize=3.0*sf,with_labels=False, width=3*sf,alpha=0.02,edge_color=selected_edgecolor,node_color="white",node_size=70*sf)
         if screen: nx.draw_networkx(G,pos, arrows=False,arrowsize=3.0*sf,with_labels=False, width=2*sf,alpha=0.05,edge_color=selected_edgecolor,node_color=node_colors,node_size=50*sf)
         nx.draw_networkx(G,pos, arrows=True,arrowsize=3.0*sf, with_labels=False, width=0.5*sf,alpha=0.7,edge_color=selected_edgecolor,node_color=node_colors,node_size=20*sf)
@@ -90,6 +92,7 @@ class GraphVisualization:
                 ax.add_patch(rect)
         return ax
 
+
 # Examples for networkx plots:
 # https://networkx.org/documentation/latest/auto_examples/index.html
 
@@ -114,10 +117,13 @@ config = configparser.ConfigParser()
 config.read(config_file_path)
 ConfigID = config['Configuration']['ConfigID']
 
+
 # read in user input on modules
 HabitatFile = config['Habitat']['HabitatFile']
 #HabitatFile = os.path.splitext(HabitatFile)[0] # this line removes any .py extension from specified file, which messes up the module import
 HabitatModule = config['Habitat']['HabitatModule']
+HabitatLogo = config['Habitat']['HabitatLogo']
+HabitatShortName = config['Habitat']['HabitatShortname']
 
 MetabolismFile = config['Metabolism']['MetabolismFile']
 MetabolismFile = os.path.splitext(MetabolismFile)[0] # this removes any .py extension
@@ -129,6 +135,9 @@ VisualizationModule = config['Visualization']['VisualizationModule']
 
 
 NumProbes = config['Sampling']['NumProbes']
+if float(NumProbes) > 1e8:
+    print('### Warning: Number of Probes limited -- change QHF code if you need more probes.')
+NumProbes = np.clip(float(NumProbes), 1, 1e8)
 
 print(' [ Configuration file: ]', ConfigID)
 print(' [ Habitat Module: ]', HabitatModule)
@@ -180,6 +189,7 @@ if screen:
     selected_edgecolor='white'
     prior_node_color='blue'
     other_node_color='lightblue'
+    metabolism_node_color='green'
     labelcolor='lightblue'
     labeloffset=0.0
 else:
@@ -189,6 +199,7 @@ else:
     selected_edgecolor='darkblue'
     prior_node_color='red'
     other_node_color='blue'
+    metabolism_node_color='green'
     labelcolor='black'
     labeloffset=-0.05
 
@@ -261,7 +272,7 @@ Suitability_Plot = []
 Variable = []
 
 # If there is a parameter to study
-for keyparams.ProbeIndex in np.arange(np.float(NumProbes)):  # Index of the parameter space locations to sample. This value is passed on to every module.
+for keyparams.ProbeIndex in np.arange(float(NumProbes)):  # Index of the parameter space locations to sample. This value is passed on to every module.
     print('Probing location ', keyparams.ProbeIndex)
 # Monte Carlo loop itself:
     for ii in np.arange(N_iter):      # Number of iterations
@@ -276,7 +287,7 @@ for keyparams.ProbeIndex in np.arange(np.float(NumProbes)):  # Index of the para
         Temperature_Distribution.append(keyparams.Temperature)
         BondAlbedo_Distribution.append(keyparams.Bond_Albedo)
         GreenHouse_Distribution.append(keyparams.GreenhouseWarming)
-        Pressure_Distribution.append(keyparams.Surface_Pressure)
+        Pressure_Distribution.append(keyparams.Pressure)
         Depth_Distribution.append(keyparams.Depth)
         runid = keyparams.runid
 
@@ -302,8 +313,15 @@ fig.set_edgecolor(selected_edgecolor)
 # Add frame:
 ax = G.visualize()
 #plt.text(0.02,0.02, 'Average Suitability %.2f' % np.mean(Suitability_Distribution),fontsize=4*sf,color=labelcolor,transform=ax.transAxes)
+
+# Add habitat logo
+im = plt.imread(HabitatLogo)
+newax = fig.add_axes([0.75, 0.75, 0.10, 0.10], anchor='NE')
+newax.set_axis_off()
+newax.imshow(im)
+fig.savefig('Figures/'+HabitatShortName+'_Connections.png')
 plt.show()
 
 #========================================================
 # Visualization of the Results
-VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, keyparams.runid,Suitability_Plot,Variable)
+VisualizationModule(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, keyparams.runid,Suitability_Plot,Variable,HabitatLogo)
