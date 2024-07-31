@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution,runid,Suitability_Plot,Variable):
-
+#(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,runid):
+def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, runid,Suitability_Plot,Variable,HabitatLogo):
     if screen:
         # Scaling factor
         sf = 1.0
@@ -26,6 +26,8 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
 
     ax = plt.axes(projection='3d')#,figsize=(4.00, 2.00), dpi=400)
     ax.scatter3D(Temperature_Distribution, Pressure_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=0.7,alpha=0.5);
+    fig = ax.get_figure()
+    fig.set_size_inches(8, 8)
     if screen: ax.scatter3D(Temperature_Distribution, Pressure_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=4.9,alpha=0.1);
     ax.set_xlabel('Surface Temperature [K]')
     #ax.set_xrange(220,450)
@@ -34,26 +36,63 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     ax.set_zlabel('Habitat Suitability')
     ax.set_title(keyparams.runid + ' | S = %.2f' % np.mean(Suitability_Distribution),fontsize=10*sf,color=labelcolor)
     #ax.text(0.02,0.02,0.02, 'Average Suitability %.2f' % np.mean(Suitability_Distribution),fontsize=10*sf,color=labelcolor,transform=ax.transAxes)
+
+    # Add logo of the habitat
+    im = plt.imread(HabitatLogo)
+    newax = fig.add_axes([0.75, 0.55, 0.15, 0.15], anchor='NE')
+    newax.set_axis_off()
+    newax.imshow(im)
+
+
+    #fig.tight_layout()
+    fig.savefig('Figures/'+keyparams.runid+'_HS-Pressure-Temperature.png')
     plt.show()
 
 
-    breakpoint()
+    #breakpoint()
 
     # Multi-plot showing distributions of key parameters
     # This will need to be optimizable from the module loaded, but now I specify the parameters
 
-    fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
-    fig, axs = plt.subplots(2, 2)
-    axs[0, 0].hist(Temperature_Distribution,bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[0, 0].set_title('Surface Temp. [K]')
+    nbins=np.floor(len(Temperature_Distribution)/30.).astype(int)
+    print(nbins)
+    #fig=plt.figure(figsize=(6.00, 2.00), dpi=400)
+    fig, axs = plt.subplots(2, 2,constrained_layout=True,figsize=(12.00, 4.00))
+    N_iter = 100.
+    #axs[0, 0].hist(Temperature_Distribution) #,bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    counts, bins = np.histogram(Temperature_Distribution, bins=nbins)
+    axs[0, 0].stairs(counts, bins, fill=1)
+    axs[0, 0].set_xlabel('Surface Temp. [K]')
     #axs[0,0].set(xlabel='[K]', ylabel='y-label')
-    axs[0, 1].hist(Pressure_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[0, 1].set_title('Surface Pressure [bar]')
-    axs[1, 0].hist(BondAlbedo_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[1, 0].set_title('Bond Albedo')
-    axs[1, 1].hist(GreenHouse_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[1, 1].set_title('Greenhouse Warming [K]')
+
+    counts, bins = np.histogram(Pressure_Distribution, bins=nbins)
+    axs[0, 1].stairs(counts, bins, fill=1)
+    axs[0, 1].set_xlabel('Surface Pressure [bar]')
+
+    counts, bins = np.histogram(BondAlbedo_Distribution, bins=nbins)
+    axs[1, 0].stairs(counts, bins, fill=1)
+    axs[1, 0].set_xlabel('Bond Albedo')
+
+    counts, bins = np.histogram(GreenHouse_Distribution, bins=nbins)
+    axs[1, 1].stairs(counts, bins, fill=1)
+    axs[1, 1].set_xlabel('Greenhouse Warming [K]')
+
+    fig.suptitle('Probability Distribution of Key Parameters  '+keyparams.runid, fontsize=13)
+
+
+    #axs[0, 0].hist(Temperature_Distribution) #,bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    #axs[0, 0].set_xlabel('Surface Temp. [K]')
+    #axs[0, 1].hist(Pressure_Distribution ) #, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    #axs[0, 1].set_xlabel('Surface Pressure [bar]')
+    #axs[1, 0].hist(BondAlbedo_Distribution)#, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    #axs[1, 0].set_xlabel('Bond Albedo')
+    #axs[1, 1].hist(GreenHouse_Distribution )#), bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    #axs[1, 1].set_xlabel('Greenhouse Warming [K]')
+
+
     fig.tight_layout()
+
+    fig.savefig('Figures/'+keyparams.runid+'_Multi-plot.png')
 
     #for ax in axs.flat:
     #    ax.set(xlabel='x-label', ylabel='y-label')
