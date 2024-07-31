@@ -69,7 +69,6 @@ def TRAPPIST1fModules():
     ModuleTemp.add_output('Surface_Pressure')
     ModuleTemp.add_output('Pressure')
     def _execute(self):
-        #global Surface_Pressure
         mu_p, sigma_p = 1.0, 0.5 # mean and standard deviation, pressure in units of atm
         keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)
         keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
@@ -137,7 +136,6 @@ def TRAPPIST1fModules():
     ModuleTemp.add_output('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
-        #global Surface_Temperature, GreenhouseWarming
         mu_gh, sigma_gh = 90., 15. # mean and standard deviation, in K, of Greenhouse effect
         keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)
         keyparams.Surface_Temperature = keyparams.GreenhouseWarming + keyparams.Equilibrium_Temp
@@ -160,7 +158,6 @@ def TRAPPIST1fModules():
     ModuleTemp.add_output('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
-        #global Surface_Temperature, GreenhouseWarming
         mu_alpha, sigma_alpha = 0.95, 0.01 # mean and standard deviation of alpha, the key parameter of the single-layer leaky greenhouse model.
         alpha = np.random.normal(mu_alpha, sigma_alpha, 1)
         alpha = np.clip(alpha, 0.,1.0)
@@ -198,6 +195,4 @@ def TRAPPIST1fModules():
     m_id=m_id+1
 
 #===============================================
-
-
     return [ModuleStar, ModuleAlbedo, ModuleOrbit, ModulePressure, ModuleEqTemperature, ModuleGreenhouse,ModulePlanetPriors] #,ModuleHabitability,Cyanobacteria_UAv1p0]

@@ -33,7 +33,6 @@ def TRAPPIST1eModules():
     ModuleTemp.define_ID(m_id)
     ModuleTemp.activate()
     def _execute(self):
-        #global Luminosity, Stellar_Mass, Stellar_Age
         keyparams.Luminosity = mu_st_lum, sigma_st_lum = 0.000553, 1.92e-5 # mean and standard deviation, Agol et al. 2021 Planetary Science Journal, 2:1, Table 7
         keyparams.Luminosity = np.random.normal(mu_st_lum, sigma_st_lum, 1)
         mu_st_mass, sigma_st_mass = 0.0898, 0.0023 # mean and standard deviation, Mann et al. 2019
@@ -51,7 +50,6 @@ def TRAPPIST1eModules():
     ModuleTemp.add_output('Semi_major_axis')
     ModuleTemp.add_output('Eccentricity')
     def _execute(self):
-        #global Semi_major_axis, Orbital_Period, Eccentricity
         keyparams.Semi_major_axis = 0.02925 # sma in astronomical units
         keyparams.Orbital_Period = 6.101013 # period in days, from Agol et al. 2021, Table 2
         keyparams.Eccentricity = 0.00 # average eccentricity, not determined
@@ -69,7 +67,6 @@ def TRAPPIST1eModules():
     ModuleTemp.add_output('Surface_Pressure')
     ModuleTemp.add_output('Pressure')
     def _execute(self):
-        #global Surface_Pressure
         mu_p, sigma_p = 5.0, 2.0 # mean and standard deviation
         keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)
         keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
@@ -90,7 +87,6 @@ def TRAPPIST1eModules():
     ModuleTemp.add_output('Volatile_Content')
     def _execute(self):
         keyparams.runid = 'TRAPPIST-1e v1.0'
-        #global Planet_Mass_Mstar,  Mantle_Composition
         mu_p, sigma_p = 2.313e-5, 0.043e-5 # mean and standard deviation in Mstar, from Agol et al. 2021 Table 2
         keyparams.Planet_Mass_Mstar = np.random.normal(mu_p, sigma_p, 1) # Planet mass in units of stellar mass
         Msol = 1.98910e30 # Solar mass in kilograms
@@ -137,7 +133,6 @@ def TRAPPIST1eModules():
     ModuleTemp.add_output('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
-        #global Surface_Temperature, GreenhouseWarming
         mu_gh, sigma_gh = 150., 30. # mean and standard deviation, in K, of Greenhouse effect
         keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)
         keyparams.Surface_Temperature = keyparams.GreenhouseWarming + keyparams.Equilibrium_Temp
@@ -189,6 +184,7 @@ def TRAPPIST1eModules():
         mu_gh, sigma_gh = 110., 50. # mean and standard deviation, in K, of Greenhouse effect
         keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)
         keyparams.Surface_Temperature = keyparams.GreenhouseWarming + keyparams.Equilibrium_Temp
+        # In this case, consider only the surface:
         keyparams.Temperature = keyparams.Surface_Temperature
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
@@ -199,4 +195,4 @@ def TRAPPIST1eModules():
 
 #===============================================
 
-    return [ModuleStar, ModuleAlbedo, ModuleOrbit, ModulePressure, ModuleEqTemperature, ModuleGreenhouse,ModulePlanetPriors] #,ModuleHabitability,Cyanobacteria_UAv1p0]
+    return [ModuleStar, ModuleAlbedo, ModuleOrbit, ModulePressure, ModuleEqTemperature, ModuleGreenhouse,ModulePlanetPriors]
