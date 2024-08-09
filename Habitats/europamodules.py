@@ -90,8 +90,8 @@ def europamodules():
 
         mu_ice, sigma_ice = 20_000, 4_000.00 # mean and standard deviation in units of  # Ice thickness mean and 1 sigma, in meters; assumption
         keyparams.Mean_IceThickness  = mu_ice
-        keyparams.Ice_Thickness = np.clip(np.random.normal(mu_ice, sigma_ice, 1),0.0, 400.) # Ice thickness mean and 1 sigma, in meters
-
+        keyparams.Ice_Thickness = np.clip(np.random.normal(mu_ice, sigma_ice, 1),0.0, 20_000.).item() # Ice thickness
+        #print(keyparams.Ice_Thickness.item())
 
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
@@ -158,7 +158,7 @@ def europamodules():
     def _execute(self):
         mu_tgrad_ice, sigma_tgrad_ice = 0.001, 0.00 # mean and standard deviation, in K/m of the temperature gradient in ice
         keyparams.Thermal_Gradient_Ice = np.random.normal(mu_tgrad_ice, sigma_tgrad_ice, 1)
-
+        print([keyparams.Depth,keyparams.Ice_Thickness])
         keyparams.Interior_Temperature= keyparams.Surface_Temperature + np.min([keyparams.Depth,keyparams.Ice_Thickness]) * keyparams.Thermal_Gradient_Ice
 
         mu_tgrad_water, sigma_tgrad_water = 0.005, 0.001 # mean and standard deviation, in K/m of the temperature gradient in water ocean
