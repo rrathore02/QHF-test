@@ -62,6 +62,9 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig.savefig('Figures/Europa_HS-Depth.png')
     plt.show()
 
+    #=========================================================
+    # 3D SCATTER PLOT : Pressure - Temperature - Depth
+
     #fig, ax = plt.subplots(figsize=(2.00, 3.00))
     ax = plt.axes(projection='3d')#,figsize=(4.00, 2.00), dpi=400)
     fig = ax.get_figure()
@@ -72,7 +75,8 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     ax.set_xlabel('Temperature [K]',fontsize=10*sf)
     ax.tick_params(labelsize=8*sf)
     #ax.set_xrange(220,450)
-    ax.axes.set_xlim3d(left=50, right=900)
+    #ax.axes.set_xlim3d(left=50, right=900)
+    ax.axes.set_xlim3d(left=50, right=np.max(Temperature_Distribution)+200.0)
     ax.set_ylabel('Depth [m]',fontsize=10*sf)
     ax.axes.set_ylim3d(bottom=-15_000, top=128_000)
     ax.set_zlabel('Habitat Suitability',fontsize=10*sf)
