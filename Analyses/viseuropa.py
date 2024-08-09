@@ -69,7 +69,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     ax.scatter3D(Temperature_Distribution, Depth_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=1.7,alpha=0.3);
     plt.rcParams.update({'font.size': 10})
     if screen: ax.scatter3D(Temperature_Distribution, Depth_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=4.9,alpha=0.1,fontsize=10*sf,);
-    ax.set_xlabel('Surface Temperature [K]',fontsize=10*sf)
+    ax.set_xlabel('Temperature [K]',fontsize=10*sf)
     ax.tick_params(labelsize=8*sf)
     #ax.set_xrange(220,450)
     ax.axes.set_xlim3d(left=50, right=900)
@@ -94,7 +94,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
     fig, axs = plt.subplots(2, 2)
     axs[0, 0].hist(Temperature_Distribution,bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[0, 0].set_title('Surface Temp. [K]')
+    axs[0, 0].set_title('Temperature [K]')
     #axs[0,0].set(xlabel='[K]', ylabel='y-label')
     axs[0, 1].hist(Pressure_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
     axs[0, 1].set_title('Surface Pressure [bar]')
