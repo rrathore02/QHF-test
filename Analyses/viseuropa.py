@@ -89,23 +89,25 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig.savefig('Figures/Europa_3D-Plot.png')
     plt.show()
 
-
-    breakpoint()
+    # debugging breakpoint, comment-out to let things run through without interruption:
+    #breakpoint()
 
     # Multi-plot showing distributions of key parameters
     # This will need to be optimizable from the module loaded, but now I specify the parameters
-
+    N_iter = np.floor(len(Temperature_Distribution)).astype(int) # set number of iterations based on length of a posterior distribution array
     fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
     fig, axs = plt.subplots(2, 2)
     axs[0, 0].hist(Temperature_Distribution,bins=np.clip(math.floor(N_iter/60.), 5, 30))
     axs[0, 0].set_title('Temperature [K]')
-    #axs[0,0].set(xlabel='[K]', ylabel='y-label')
-    axs[0, 1].hist(Pressure_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[0, 1].set_title('Surface Pressure [bar]')
-    axs[1, 0].hist(BondAlbedo_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[1, 0].set_title('Bond Albedo')
-    axs[1, 1].hist(GreenHouse_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[1, 1].set_title('Greenhouse Warming [K]')
+    axs[0,0].set(xlabel='[K]', ylabel='y-label')
+    # Matthew here -- I've commented these out to avoid errors because they don't really make sense for Europa,
+    #    and aren't even calculated properly for such a plot like this anyways
+    #axs[0, 1].hist(Surface_Pressure_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    #axs[0, 1].set_title('Surface Pressure [bar]')
+    #axs[1, 0].hist(BondAlbedo_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    #axs[1, 0].set_title('Bond Albedo')
+    #axs[1, 1].hist(GreenHouse_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+    #axs[1, 1].set_title('Greenhouse Warming [K]')
     #fig.tight_layout()
 
     #for ax in axs.flat:
