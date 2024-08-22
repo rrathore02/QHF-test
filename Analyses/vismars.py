@@ -23,24 +23,28 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
         labelcolor='black'
         labeloffset=-0.05
 
+    ### ===================================================================================== ##
+    ##   Suitability vs. Depth profile plot
+    ### ===================================================================================== ##
+
     plt.rcParams.update({'font.size': 4})
-    fig, ax = plt.subplots(figsize=(2.00, 3.00), dpi=400)
+    fig, ax = plt.subplots(figsize=(2.00, 6.00), dpi=400)
     #ax.facecolor(bkgcolor)
     #ax.edgecolor(selected_edgecolor)
     # Add frame:
     #for zz in np.arange(int(NumProbes)):
     ax.set_xlim([0.,1.2])
-    ax.set_ylim([100_000,-9000])
+    ax.set_ylim([5000,-2000])
     #ax.plot(Suitability_Plot[zz],SavedParameters[zz].Depth, marker='o',alpha=0.8,color='lightblue',markersize=3)
     ax.plot(Suitability_Plot,Variable, alpha=0.8,color='black',markersize=1.1)
     #ax = G.visualize()
     #plt.text(0.02,0.02, 'Average Suitability %.2f' % np.mean(Suitability_Distribution),fontsize=4*sf,color=labelcolor,transform=ax.transAxes)
     ax.plot([-100.,100],[0.,0.], linestyle='--', linewidth=0.5, color='red')
-    ax.text(0.7,-4000.,'Atmosphere', fontsize=5, color='gray')
+    ax.text(0.7,-1000.,'Atmosphere', fontsize=5, color='gray')
     ax.fill_between([0.0,1.2],[0_000,0_000],[-9000,-9000], color='lightblue',alpha=0.3)
     ax.fill_between([0.0,1.2],[0_000,0_000],[100_000,100_000], color='red',alpha=0.05)
     #ax.text(0.7,40.,'Surface', fontsize=3, color='red')
-    ax.text(0.7,10_000.,'Subsurface', fontsize=5, color='red')
+    ax.text(0.7,2_000.,'Subsurface', fontsize=5, color='red')
     ax.set_title('Habitat Suitability for Mars Subsurface \n '+ keyparams.runid)
     ax.set_ylabel('Depth [m]')
     ax.set_xlabel('Probability of Habitat Suitability')
@@ -55,6 +59,16 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig.savefig('Figures/Mars_HS-Depth.png')
     plt.show()
 
+    ### ======================================================================================= ##
+    ##    3D Suitability vs. Temperature vs. Depth scatter plot
+    ### ======================================================================================= ##
+
+    #print(min(Temperature_Distribution), max(Temperature_Distribution))
+    #print(Temperature_Distribution)
+    #print(min(Depth_Distribution), max(Depth_Distribution))
+    #print(Suitability_Distribution)
+    print(min(Suitability_Distribution), max(Suitability_Distribution))
+    #print(Suitability_Distribution)
 
     ax = plt.axes(projection='3d')#,figsize=(4.00, 2.00), dpi=400)
     ax.scatter3D(Temperature_Distribution, Depth_Distribution, Suitability_Distribution, c=Suitability_Distribution, cmap='seismic',s=1.7,alpha=0.3);
@@ -65,12 +79,14 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     ax.set_xlabel('Temperature [K]',fontsize=10*sf)
     ax.tick_params(labelsize=8*sf)
     #ax.set_xrange(220,450)
-    ax.axes.set_xlim3d(left=220, right=650)
+    #ax.axes.set_xlim3d(left=220, right=650)
+    ax.axes.set_xlim3d(left=min(Temperature_Distribution), right=max(Temperature_Distribution))
     ax.set_ylabel('Depth [m]',fontsize=10*sf)
-    ax.axes.set_ylim3d(bottom=0, top=100_000)
+    ax.axes.set_ylim3d(bottom=0, top=max(Depth_Distribution))
     ax.set_zlabel('Habitat Suitability',fontsize=10*sf)
     ax.set_title(keyparams.runid + ' | S = %.2f' % np.mean(Suitability_Distribution),fontsize=10*sf,color=labelcolor)
     #ax.text(0.02,0.02,0.02, 'Average Suitability %.2f' % np.mean(Suitability_Distribution),fontsize=10*sf,color=labelcolor,transform=ax.transAxes)
+    # add logo:
     newax = fig.add_axes([0.75, 0.65, 0.10, 0.10], anchor='NE')
     newax.set_axis_off()
     newax.imshow(im)
@@ -103,7 +119,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
 
     counts, bins = np.histogram(Temperature_Distribution, bins=20)
     axs[0, 0].stairs(counts, bins, fill=1)
-    axs[0, 0].set_xlabel('Surface Temp. [K]')
+    axs[0, 0].set_xlabel('Temperature [K]')
     #axs[0,0].set(xlabel='[K]', ylabel='y-label')
 
     counts, bins = np.histogram(Pressure_Distribution, bins=20)
