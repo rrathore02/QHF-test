@@ -20,7 +20,7 @@ def marsmodules():
     def _execute(self):
         #global Bond_Albedo
         mu_albedo, sigma_albedo = 0.25, 0.04 # mean and standard deviation, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html (std dev assumed to account for local surface albedo variations)
-        keyparams.Bond_Albedo = np.random.normal(mu_albedo, sigma_albedo, 1)
+        keyparams.Bond_Albedo = np.random.normal(mu_albedo, sigma_albedo, 1)[0]
 
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleAlbedo = ModuleTemp
@@ -37,9 +37,9 @@ def marsmodules():
     def _execute(self):
         #global Luminosity, Stellar_Mass, Stellar_Age
         keyparams.Luminosity = mu_st_lum, sigma_st_lum = 1.0, 0.00001 # Solar luminosity is 1.0 in Lsol units
-        keyparams.Luminosity = np.random.normal(mu_st_lum, sigma_st_lum, 1)
+        keyparams.Luminosity = np.random.normal(mu_st_lum, sigma_st_lum, 1)[0]
         mu_st_mass, sigma_st_mass = 1.0000, 0.000001 # mean and standard deviation, Solar mass in solar units
-        keyparams.Stellar_Mass = np.random.normal(mu_st_mass, sigma_st_mass, 1)
+        keyparams.Stellar_Mass = np.random.normal(mu_st_mass, sigma_st_mass, 1)[0]
         keyparams.Stellar_Age = 4.567 # average eccentricity
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleStar = ModuleTemp
@@ -77,7 +77,7 @@ def marsmodules():
         keyparams.runid = 'Mars AE v0.1'
         #global Planet_Mass_Mstar,  Mantle_Composition
         mu_p, sigma_p = 3.2260e-07, 0.00 # mean and standard deviation in Mstar, from https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html
-        keyparams.Planet_Mass_Mstar = np.random.normal(mu_p, sigma_p, 1) # Planet mass in units of stellar mass
+        keyparams.Planet_Mass_Mstar = np.random.normal(mu_p, sigma_p, 1)[0] # Planet mass in units of stellar mass
         Msol = 1.98910e30 # Solar mass in kilograms
         MEarth = 5.9736e24 # Earth mass in kilograms
         unitconversion = MEarth / Msol # Convert Solar mass to Earth mass
@@ -88,7 +88,7 @@ def marsmodules():
         if keyparams.ProbeIndex is not None:        # Is the program sampling multiple locations in the parameter space?
             keyparams.Depth = keyparams.ProbeIndex * 1000. # If so, depth [in meter] is calculated from the probe index
         else:
-            keyparams.Depth = np.random.uniform(low=0., high=5000.) # Depth in meter
+            keyparams.Depth = np.random.uniform(low=0., high=5000.)[0] # Depth in meter
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
     ModuleTemp.activate()
@@ -108,7 +108,7 @@ def marsmodules():
     ModuleTemp.add_output('Internal_Pressure')
     def _execute(self):
         mu_p, sigma_p = 0.007, 0.002 # mean and standard deviation, pressure in units of atm
-        keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)
+        keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)[0]
         keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
         keyparams.Internal_Pressure = keyparams.Surface_Pressure + (keyparams.Depth * keyparams.Gravity * keyparams.Density)/101325.  # Pressure at Depth equals atmospheric pressure plus density times gravity times column height (i.e., depth)
         keyparams.Pressure = keyparams.Internal_Pressure
@@ -153,7 +153,7 @@ def marsmodules():
     def _execute(self):
         #global Surface_Temperature, GreenhouseWarming
         mu_gh, sigma_gh = 90., 15. # mean and standard deviation, in K, of Greenhouse effect
-        keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)
+        keyparams.GreenhouseWarming = np.random.normal(mu_gh, sigma_gh, 1)[0]
         keyparams.Surface_Temperature = keyparams.GreenhouseWarming + keyparams.Equilibrium_Temp
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
@@ -174,7 +174,7 @@ def marsmodules():
     def _execute(self):
         #global Surface_Temperature, GreenhouseWarming
         mu_alpha, sigma_alpha = 0.1, 0.02 # mean and standard deviation of alpha, the key parameter of the single-layer leaky greenhouse model.
-        alpha = np.random.normal(mu_alpha, sigma_alpha, 1)
+        alpha = np.random.normal(mu_alpha, sigma_alpha, 1)[0]
         alpha = np.clip(alpha, 0.,1.0)
         keyparams.GreenhouseWarming =  keyparams.Equilibrium_Temp * (2.0/(2.0-alpha))**(1/4.) - keyparams.Equilibrium_Temp
         keyparams.Surface_Temperature = keyparams.Equilibrium_Temp + keyparams.GreenhouseWarming
@@ -195,7 +195,7 @@ def marsmodules():
     def _execute(self):
         mu_tgrad, sigma_tgrad = 0.002, 0.0005 # mean and standard deviation, in K/m of the temperature gradient
         #keyparams.Thermal_Gradient = np.clip(np.random.normal(mu_tgrad, sigma_tgrad, 1), 0.0, 1000.) # Make sure Temperature gradient is not negative
-        keyparams.Thermal_Gradient = np.random.normal(mu_tgrad, sigma_tgrad, 1)
+        keyparams.Thermal_Gradient = np.random.normal(mu_tgrad, sigma_tgrad, 1)[0]
         keyparams.Interior_Temperature= keyparams.Surface_Temperature + keyparams.Depth * keyparams.Thermal_Gradient
         keyparams.Temperature = keyparams.Interior_Temperature
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
