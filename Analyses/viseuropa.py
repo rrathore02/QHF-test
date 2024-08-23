@@ -94,28 +94,48 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
 
     # Multi-plot showing distributions of key parameters
     # This will need to be optimizable from the module loaded, but now I specify the parameters
-    N_iter = np.floor(len(Temperature_Distribution)).astype(int) # set number of iterations based on length of a posterior distribution array
-    fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
-    fig, axs = plt.subplots(2, 2)
-    axs[0, 0].hist(Temperature_Distribution,bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    axs[0, 0].set_title('Temperature [K]')
-    axs[0,0].set(xlabel='[K]', ylabel='y-label')
-    # Matthew here -- I've commented these out to avoid errors because they don't really make sense for Europa,
-    #    and aren't even calculated properly for such a plot like this anyways
-    #axs[0, 1].hist(Surface_Pressure_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    #axs[0, 1].set_title('Surface Pressure [bar]')
-    #axs[1, 0].hist(BondAlbedo_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    #axs[1, 0].set_title('Bond Albedo')
-    #axs[1, 1].hist(GreenHouse_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
-    #axs[1, 1].set_title('Greenhouse Warming [K]')
-    #fig.tight_layout()
+#     N_iter = np.floor(len(Temperature_Distribution)).astype(int) # set number of iterations based on length of a posterior distribution array
+#     fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
+#     fig, axs = plt.subplots(2, 2)
+#     axs[0, 0].hist(Temperature_Distribution,bins=np.clip(math.floor(N_iter/60.), 5, 30))
+#     axs[0, 0].set_title('Temperature [K]')
+#     axs[0,0].set(xlabel='[K]', ylabel='y-label')
+#     # Matthew here -- I've commented these out to avoid errors because they don't really make sense for Europa,
+#     #    and aren't even calculated properly for such a plot like this anyways
+#     #axs[0, 1].hist(Surface_Pressure_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+#     #axs[0, 1].set_title('Surface Pressure [bar]')
+#     #axs[1, 0].hist(BondAlbedo_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+#     #axs[1, 0].set_title('Bond Albedo')
+#     #axs[1, 1].hist(GreenHouse_Distribution, bins=np.clip(math.floor(N_iter/60.), 5, 30))
+#     #axs[1, 1].set_title('Greenhouse Warming [K]')
+#     #fig.tight_layout()
 
-    #for ax in axs.flat:
-    #    ax.set(xlabel='x-label', ylabel='y-label')
+#     #for ax in axs.flat:
+#     #    ax.set(xlabel='x-label', ylabel='y-label')
 
-    # Hide x labels and tick labels for top plots and y ticks for right plots.
-    #for ax in axs.flat:
-    #    ax.label_outer()
+#     # Hide x labels and tick labels for top plots and y ticks for right plots.
+#     #for ax in axs.flat:
+#     #    ax.label_outer()
+#     plt.show()
+    
+    ## plot the thermal profile
+    Depth_Distribution = np.asarray(Depth_Distribution)     
+    
+    fig, ax = plt.subplots(figsize=(8,4), dpi=400)
+    niters = len(np.where(Depth_Distribution == max(Depth_Distribution))[0])
+    avgdepths = np.average(np.asarray(Depth_Distribution).reshape(-1, niters), axis=1) 
+    ax.plot(Depth_Distribution[::niters], Temperature_Distribution[::niters], c='black', zorder=10, alpha=0.25, label='Temperature Profiles')
+    avgtemps = np.average(np.asarray(Temperature_Distribution).reshape(-1,niters), axis=1)
+    #
+    ax.plot(avgdepths, avgtemps, c='black', zorder=10, label='Average Thermal Profile')
+    ax.axvline(keyparams.Ice_Thickness, c='lightblue')
+    ax.fill_betweenx(y=np.linspace(min(Temperature_Distribution)-50, max(Temperature_Distribution)+50, 50),
+                     x1=keyparams.Ice_Thickness, x2=0, facecolor='lightblue', alpha=0.5, edgecolor='lightblue',label='Ice')
+    ax.set_xlabel('Depth [m]', fontsize=12)
+    ax.set_xlim(0., max(Depth_Distribution)+10000)
+    ax.set_ylabel('Temperature [K]', fontsize=12)
+    ax.set_ylim(min(Temperature_Distribution)-20, max(Temperature_Distribution)+20)
+    ax.legend(loc='best')
     plt.show()
 
 
