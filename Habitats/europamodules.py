@@ -159,26 +159,49 @@ def europamodules():
     ModuleTemp.add_input('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
-        mu_tgrad_ice, sigma_tgrad_ice = 0.001, 0.00 # mean and standard deviation, in K/m of the temperature gradient in ice
-        keyparams.Thermal_Gradient_Ice = np.random.normal(mu_tgrad_ice, sigma_tgrad_ice, 1)[0]
+        #mu_tgrad_ice, sigma_tgrad_ice = 0.001, 0.00 # mean and standard deviation, in K/m of the temperature gradient in ice
+        #keyparams.Thermal_Gradient_Ice = np.random.normal(mu_tgrad_ice, sigma_tgrad_ice, 1)[0]
+        # set thermal gradient in ice based on linear function btwn surface and user-set boundary temp
+        keyparams.WaterIceBoundary_Temperature = 273.15
+        keyparams.Thermal_Gradient_Ice = (keyparams.WaterIceBoundary_Temperature - keyparams.Surface_Temperature) / keyparams.Ice_Thickness
+        
+        
         #print([keyparams.Depth,keyparams.Ice_Thickness])
         keyparams.Interior_Temperature= keyparams.Surface_Temperature + np.min([keyparams.Depth,keyparams.Ice_Thickness]) * keyparams.Thermal_Gradient_Ice
 
-        mu_tgrad_water, sigma_tgrad_water = 0.005, 0.001 # mean and standard deviation, in K/m of the temperature gradient in water ocean
-        keyparams.Thermal_Gradient_Water = np.random.normal(mu_tgrad_water, sigma_tgrad_water, 1)[0]
-
-
-        # Calculate the water column above current depth (not the ice) and add the temperature difference:
-        if keyparams.Depth > keyparams.Ice_Thickness:
-            keyparams.Interior_Temperature += (keyparams.Depth - keyparams.Ice_Thickness) * keyparams.Thermal_Gradient_Water
-        # Interior_Temperature calculated as a single-value array so need to pull that single-value out before saving
-        keyparams.Interior_Temperature = keyparams.Interior_Temperature
-        keyparams.Temperature = keyparams.Interior_Temperature
+        #mu_tgrad_water, sigma_tgrad_water = 0.005, 0.001 # mean and standard deviation, in K/m of the temperature gradient in water ocean
+        #keyparams.Thermal_Gradient_Water = np.random.normal(mu_tgrad_water, sigma_tgrad_water, 1)[0]
         
-        # Enforce physical limits:
-        freezing_point = 273. # freezing point of water in [Kelvin]
-        if keyparams.Temperature < freezing_point:
-            keyparams.Temperature = freezing_point # the ocean temperature (at the surface of the ocean) can't be below the freezing point
+        # calculate the temperature at the very bottom of the ice layer
+        # this will be the starting point for the water temperature profile
+        #keyparams.Surface_Temperature + (keyparams.Ice_Thickness*keyparams.Thermal_Gradient_Ice)
+        # calculate the ocean thermal profile following our quadratic parameterization of the Vance+ profiles:
+        # T = a*x^2 + m*x + b; a,m are fitted coefficients; x = depth below water/ice boundary; b = temp at boundary
+        a = 0.000000000148
+        m = 0.00001102
+        
+        if keyparams.Depth <= keyparams.Ice_Thickness:
+            # here, we're inside the ice:
+            keyparams.Interior_Temperature = keyparams.Surface_Temperature + (keyparams.Depth*keyparams.Thermal_Gradient_Ice)
+        elif keyparams.Depth > keyparams.Ice_Thickness:
+            # here, we're inside the ocean
+            relative_depth = abs(keyparams.Depth - keyparams.Ice_Thickness)
+            keyparams.Interior_Temperature = (a*relative_depth**2) + (m*relative_depth) + keyparams.WaterIceBoundary_Temperature
+        #keyparams.Interior_Temperature = keyparams.Interior_Temperature
+        keyparams.Temperature = keyparams.Interior_Temperature
+        # note the above will always be > the boundary temperature, so don't need to enforce a lower-T-limit boundary condition
+        
+#         # Calculate the water column above current depth (not the ice) and add the temperature difference:
+#         if keyparams.Depth > keyparams.Ice_Thickness:
+#             keyparams.Interior_Temperature += (keyparams.Depth - keyparams.Ice_Thickness) * keyparams.Thermal_Gradient_Water
+#         # Interior_Temperature calculated as a single-value array so need to pull that single-value out before saving
+#         keyparams.Interior_Temperature = keyparams.Interior_Temperature
+#         keyparams.Temperature = keyparams.Interior_Temperature
+        
+#         # Enforce physical limits:
+#         freezing_point = 273. # freezing point of water in [Kelvin]
+#         if keyparams.Temperature < freezing_point:
+#             keyparams.Temperature = freezing_point # the ocean temperature (at the surface of the ocean) can't be below the freezing point
 
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleTemp.define_ID(m_id)
