@@ -20,7 +20,8 @@ def europamodules():
     def _execute(self):
         #global Bond_Albedo
         mu_albedo, sigma_albedo = 0.64, 0.00 # mean and standard deviation. The albedo is from "The Planetary Scientist's Companion", Lodders & Fegley
-        keyparams.Bond_Albedo = np.random.normal(mu_albedo, sigma_albedo, 1)[0]
+        # draw a random albedo from the distribution, limited between 0 and 1
+        keyparams.Bond_Albedo = np.clip(np.random.normal(mu_albedo, sigma_albedo, 1)[0], a_min=0., a_max=1.)
 
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
     ModuleAlbedo = ModuleTemp
