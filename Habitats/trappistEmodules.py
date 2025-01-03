@@ -129,8 +129,8 @@ def TRAPPIST1eModules():
     ModuleTemp.define_name('Greenhouse \n Effect')
     ModuleTemp.add_input('Equilibrium_Temp')
     ModuleTemp.add_input('Planet_Mass')
-    ModuleTemp.add_input('Mantle_Composition')
-    ModuleTemp.add_input('Volatile_Content')
+    #ModuleTemp.add_input('Mantle_Composition')
+    #ModuleTemp.add_input('Volatile_Content')
     ModuleTemp.add_output('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
@@ -151,8 +151,8 @@ def TRAPPIST1eModules():
     ModuleTemp.define_name('Leaky Greenhouse')
     ModuleTemp.add_input('Equilibrium_Temp')
     ModuleTemp.add_input('Planet_Mass')
-    ModuleTemp.add_input('Mantle_Composition')
-    ModuleTemp.add_input('Volatile_Content')
+    #ModuleTemp.add_input('Mantle_Composition')
+    #ModuleTemp.add_input('Volatile_Content')
     ModuleTemp.add_output('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
@@ -178,7 +178,7 @@ def TRAPPIST1eModules():
     #ModuleTemp.add_input('Equilibrium_Temp')
     ModuleTemp.add_input('Planet_Mass')
     ModuleTemp.add_input('Mantle_Composition')
-    ModuleTemp.add_input('Volatile_Content')
+    #ModuleTemp.add_input('Volatile_Content')
     ModuleTemp.add_output('Outgassing')
     ModuleTemp.add_output('Atm. Sinks')
     def _execute(self):
