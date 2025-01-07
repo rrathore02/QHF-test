@@ -87,7 +87,11 @@ def europamodules():
         if keyparams.ProbeIndex is not None:        # Is the program sampling multiple locations in the parameter space?
             keyparams.Depth = keyparams.ProbeIndex * 1000. # If so, depth [in meter] is calculated from the probe index
         else:
-            keyparams.Depth = np.random.uniform(low=0., high=136_000.)[0] # Depth in meter
+            keyparams.Depth = np.random.uniform(low=0., high=128_000.)[0] # Depth in meter
+        # make sure depth doesn't run below rocky interior:
+        #    assumes rocky interior is at ~128,000 m depth
+        if keyparams.Depth > 128_000:
+            keyparams.Depth = 128_000#np.random.uniform(low=0., high=128_000.)
 
         mu_ice, sigma_ice = 20000., 4000. # mean and standard deviation in units of  # Ice thickness mean and 1 sigma, in meters; assumption
         keyparams.Mean_IceThickness  = mu_ice

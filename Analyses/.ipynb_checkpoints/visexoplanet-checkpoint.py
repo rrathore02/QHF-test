@@ -47,7 +47,6 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
 
     #fig.tight_layout()
     fig.savefig('Figures/'+keyparams.runid+'_HS-Pressure-Temperature.png')
-    fig.savefig('Figures/'+keyparams.runid+'_HS-Pressure-Temperature.svg') # vector format
     plt.show()
 
 
@@ -115,7 +114,6 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig.tight_layout()
 
     fig.savefig('Figures/'+keyparams.runid+'_Multi-plot.png')
-    fig.savefig('Figures/'+keyparams.runid+'_Multi-plot.svg')
 
     #for ax in axs.flat:
     #    ax.set(xlabel='x-label', ylabel='y-label')

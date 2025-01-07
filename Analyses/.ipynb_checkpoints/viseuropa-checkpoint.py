@@ -65,7 +65,6 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
 
     fig.tight_layout()
     fig.savefig('Figures/Europa_HS-Depth.png')
-    fig.savefig('Figures/Europa_HS-Depth.svg')
     plt.show()
 
     ### ======================================================================================= ##
@@ -95,7 +94,6 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     newax.set_axis_off()
     newax.imshow(im)
     fig.savefig('Figures/Europa_3D-Plot.png')
-    fig.savefig('Figures/Europa_3D-Plot.svg')
     plt.show()
 
     # debugging breakpoint, comment-out to let things run through without interruption:

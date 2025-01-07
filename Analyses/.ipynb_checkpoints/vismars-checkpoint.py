@@ -56,7 +56,6 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     # save and show figure
     fig.tight_layout()
     fig.savefig('Figures/Mars_HS-Depth.png')
-     fig.savefig('Figures/Mars_HS-Depth.svg') # vector format
     plt.close()
 
     ### ======================================================================================= ##
@@ -84,7 +83,6 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     newax.set_axis_off()
     newax.imshow(im)
     fig.savefig('Figures/Mars_3D-Plot.png')
-    fig.savefig('Figures/Mars_3D-Plot.svg')
     plt.close()
 
 
@@ -131,7 +129,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig.suptitle('Probability Distribution of Key Parameters  '+keyparams.runid, fontsize=13)
 
     fig.savefig('Figures/'+keyparams.runid+'_Multi-plot.png')
-    fig.savefig('Figures/'+keyparams.runid+'_Multi-plot.svg')
+
     #for ax in axs.flat:
     #    ax.set(xlabel='x-label', ylabel='y-label')
 

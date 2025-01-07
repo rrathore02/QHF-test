@@ -332,7 +332,6 @@ newax = fig.add_axes([0.75, 0.75, 0.10, 0.10], anchor='NE')
 newax.set_axis_off()
 newax.imshow(im)
 fig.savefig('Figures/'+HabitatShortName+'_Connections.png')
-fig.savefig('Figures/'+HabitatShortName+'_Connections.svg') # vector format
 plt.show()
 
 #========================================================

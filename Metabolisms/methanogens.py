@@ -15,7 +15,11 @@ def Methanogens_AEv1p0():
     ModuleTemp.add_input('Pressure')
     ModuleTemp.add_output('Suitability')
     def _execute(self):
-        if keyparams.Pressure > 0.07 and keyparams.Temperature < (273.25+122.) and keyparams.Temperature > (273.25-16.):
+        #  Limits to enforce:
+        #   suitability = 1 for 0.07 atm < P < 1480.3845 atm (150 MPa)
+        #                       (273.25-16.0) < T < (273.25+122.0)
+        #   suitability = 0 otherwise
+        if (0.07 < keyparams.Pressure < 1480.3845) and ((273.25-16.0) < keyparams.Temperature < (273.25+122.)):
             keyparams.Suitability=1.0
         else:
             keyparams.Suitability=0.0
