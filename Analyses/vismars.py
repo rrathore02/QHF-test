@@ -36,10 +36,10 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     # Limit suitability axis
     ax.set_xlim([0.,1.2])
     # Limit elevation to 5000 m below the surface
-    ax.set_ylim([-100000,5000]) 
+    ax.set_ylim([-15000,2000]) 
     # Plot shaded regions to indicate above/below the surface
     #    blue = atmosphere, red = sub-surface
-    ax.text(0.7, 1500.,'Atmosphere', fontsize=5, color='gray')
+    ax.text(0.7, 750.,'Atmosphere', fontsize=5, color='gray')
     ax.fill_between([0.0,1.2],[0_000,0_000],[5000,5000], color='lightblue',alpha=0.3) # make sure these somewhat match axes limits!
     ax.text(0.7,-5_000.,'Subsurface', fontsize=5, color='red')
     ax.plot([-100.,100],[0.,0.], linestyle='--', linewidth=0.5, color='red') # dotted line to highlight the surface
@@ -56,8 +56,8 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     # save and show figure
     fig.tight_layout()
     fig.savefig('Figures/Mars_HS-Depth.png')
-     fig.savefig('Figures/Mars_HS-Depth.svg') # vector format
-    plt.close()
+    fig.savefig('Figures/Mars_HS-Depth.svg') # vector format
+    plt.show()
 
     ### ======================================================================================= ##
     ##    3D Suitability vs. Temperature vs. Depth scatter plot
@@ -85,7 +85,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     newax.imshow(im)
     fig.savefig('Figures/Mars_3D-Plot.png')
     fig.savefig('Figures/Mars_3D-Plot.svg')
-    plt.close()
+    plt.show()
 
 
     #breakpoint()

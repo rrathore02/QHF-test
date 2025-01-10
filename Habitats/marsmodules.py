@@ -194,9 +194,12 @@ def marsmodules():
     ModuleTemp.add_input('Surface_Temperature')
     ModuleTemp.add_output('Temperature')
     def _execute(self):
-        mu_tgrad, sigma_tgrad = 0.002, 0.001#0.05#0.002, 0.0005 # mean and standard deviation, in K/m of the temperature gradient
-        #keyparams.Thermal_Gradient = np.clip(np.random.normal(mu_tgrad, sigma_tgrad, 1), 0.0, 1000.) # Make sure Temperature gradient is not negative
+        mu_tgrad, sigma_tgrad = 0.03, 0.02 # mean and standard deviation, in K/m of the temperature gradient
         keyparams.Thermal_Gradient = np.random.normal(mu_tgrad, sigma_tgrad, 1)[0]
+        # if the gradient is negative, re-roll:
+        if keyparams.Thermal_Gradient < 0.:
+            while keyparams.Thermal_Gradient < 0.:
+                keyparams.Thermal_Gradient = np.random.normal(mu_tgrad, sigma_tgrad, 1)[0]
         keyparams.Interior_Temperature= keyparams.Surface_Temperature + keyparams.Depth * keyparams.Thermal_Gradient
         keyparams.Temperature = keyparams.Interior_Temperature
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
