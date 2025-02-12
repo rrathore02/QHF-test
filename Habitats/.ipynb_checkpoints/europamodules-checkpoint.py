@@ -156,6 +156,13 @@ def europamodules():
 
 
 #===============================================
+
+t = ...
+salinity = ...
+
+interpolation = interp1d(...)
+
+    
     global ModuleInterior
     ModuleTemp = mcmodules.Module()
     ModuleTemp.define_name('Interior \n Processes')
@@ -169,6 +176,7 @@ def europamodules():
         keyparams.WaterIceBoundary_Temperature = 273.15
         keyparams.Thermal_Gradient_Ice = (keyparams.WaterIceBoundary_Temperature - keyparams.Surface_Temperature) / keyparams.Ice_Thickness
         
+        keyparams.Salinity = interpolation(Temperature)
         
         #print([keyparams.Depth,keyparams.Ice_Thickness])
         keyparams.Interior_Temperature= keyparams.Surface_Temperature + np.min([keyparams.Depth,keyparams.Ice_Thickness]) * keyparams.Thermal_Gradient_Ice
