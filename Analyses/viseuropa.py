@@ -147,5 +147,15 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     # ax.legend(loc='best')
     # plt.show()
 
+    ## plot the pressure profile
+    P_dist = np.asarray(Pressure_Distribution)
+    fig, ax = plt.subplots()
+    niters = len(np.where(P_dist == max(P_dist))[0])
+    avgdepths = np.average(np.asarray(Depth_Distribution).reshape(-1, niters), axis=1)
+    avgP = np.average(P_dist.reshape(-1, niters), axis=1)
+    ax.plot(avgdepths, avgP)
+    ax.set_xlabel('Depth (m)')
+    ax.set_ylabel('Pressure (atm)', fontsize=12)
+    plt.show()
 
     return
