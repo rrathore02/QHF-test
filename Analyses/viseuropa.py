@@ -23,10 +23,39 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
         labelcolor='black'
         labeloffset=-0.05
 
+
+
+    ### ===================================================================================== ##
+    ##   Pressure vs. Depth profile plot
+    ### ===================================================================================== ##
+    Depth_Distribution = np.asarray(Depth_Distribution)  
+    Pressure_Distribution = np.asarray(Pressure_Distribution)
+    #plt.tight_layout()
+    fig, ax = plt.subplots(figsize=(2.00,1.00))
+    ax.plot(Pressure_Distribution, -Depth_Distribution, c='black', zorder=10, alpha=1, label='Pressure Profile')
+    ax.axvline(542., c='red', ls='--')
+    ax.text(542+50, -100000,  '55 MPa', c='red')
+    ax.axvline(1480., c='red', ls='--')
+    ax.text(1480+50, -100000, '150 MPa', c='red')
+    #
+    #ax.axvline(keyparams.Ice_Thickness, c='lightblue')
+    ax.fill_between(x=np.linspace(min(Pressure_Distribution)-50, max(Pressure_Distribution)+50, 50),
+                     y1=-keyparams.Ice_Thickness, y2=0, facecolor='lightblue', alpha=0.5, edgecolor='lightblue',label='Ice')
+    ax.fill_between(x=np.linspace(min(Pressure_Distribution)-50, max(Pressure_Distribution)+50, 50),
+                     y1=-128_000, y2=-140_000, facecolor='lightgray', alpha=0.5, edgecolor='lightgray', label='Rock')
+                     
+    ax.set_ylabel('Elevation [m]', fontsize=12)
+    ax.set_yticks([0,-20000, -40000, -60000, -80000, -100000, -120000])
+    ax.set_ylim(-130000, 0)
+    ax.set_xlabel('Pressure [atm]', fontsize=12)
+    ax.set_xlim(min(Pressure_Distribution), max(Pressure_Distribution))
+    ax.legend(loc='best')
+    plt.show()
+    
     ### ===================================================================================== ##
     ##   Suitability vs. Depth profile plot
     ### ===================================================================================== ##
-    print(keyparams.Ice_Thickness)
+    #print(keyparams.Ice_Thickness)
     plt.rcParams.update({'font.size': 4})
     fig, ax = plt.subplots(figsize=(2.00, 3.00), dpi=400)
     # Suitability vs. negative Depth 
@@ -98,6 +127,8 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig.savefig('Figures/Europa_3D-Plot.svg')
     plt.show()
 
+
+
     # debugging breakpoint, comment-out to let things run through without interruption:
     #breakpoint()
 
@@ -127,7 +158,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
 #     #    ax.label_outer()
 #     plt.show()
     
-    # ## plot the thermal profile
+    # # ## plot the thermal profile
     # Depth_Distribution = np.asarray(Depth_Distribution)     
     
     # fig, ax = plt.subplots(figsize=(8,4), dpi=400)
@@ -147,15 +178,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     # ax.legend(loc='best')
     # plt.show()
 
-    ## plot the pressure profile
-    P_dist = np.asarray(Pressure_Distribution)
-    fig, ax = plt.subplots()
-    niters = len(np.where(P_dist == max(P_dist))[0])
-    avgdepths = np.average(np.asarray(Depth_Distribution).reshape(-1, niters), axis=1)
-    avgP = np.average(P_dist.reshape(-1, niters), axis=1)
-    ax.plot(avgdepths, avgP)
-    ax.set_xlabel('Depth (m)')
-    ax.set_ylabel('Pressure (atm)', fontsize=12)
-    plt.show()
+
+    
 
     return

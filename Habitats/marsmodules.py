@@ -98,6 +98,31 @@ def marsmodules():
 
 
 #===============================================
+    # # original:
+    # global ModulePressure
+    # global Surface_Pressure
+    # ModuleTemp = mcmodules.Module()
+    # ModuleTemp.define_name('Surface \n Pressure Prior')
+    # ModuleTemp.add_input('Depth')
+    # ModuleTemp.add_input('Gravity')
+    # ModuleTemp.add_input('Density')
+    # ModuleTemp.add_output('Pressure') # changed from Surface_Pressure to Pressure
+    # #ModuleTemp.add_output('Internal_Pressure')
+    # def _execute(self):
+    #     mu_p, sigma_p = 0.007, 0.002 # mean and standard deviation, pressure in units of atm
+    #     keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)[0]
+    #     keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
+    #     keyparams.Internal_Pressure = keyparams.Surface_Pressure + (keyparams.Depth * keyparams.Gravity * keyparams.Density)/101325.  # Pressure at Depth equals atmospheric pressure plus density times gravity times column height (i.e., depth)
+    #     keyparams.Pressure = keyparams.Internal_Pressure
+    # ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
+    # ModuleTemp.define_ID(m_id)
+    # ModuleTemp.activate()
+    # ModulePressure = ModuleTemp
+    # m_id=m_id+1
+    # # end original
+
+
+    # original:
     global ModulePressure
     global Surface_Pressure
     ModuleTemp = mcmodules.Module()
@@ -105,12 +130,39 @@ def marsmodules():
     ModuleTemp.add_input('Depth')
     ModuleTemp.add_input('Gravity')
     ModuleTemp.add_input('Density')
-    ModuleTemp.add_output('Pressure') # changed from Surface_Pressure to Pressure
+    ModuleTemp.add_output('Surface_Pressure') # changed from Surface_Pressure to Pressure
     #ModuleTemp.add_output('Internal_Pressure')
     def _execute(self):
         mu_p, sigma_p = 0.007, 0.002 # mean and standard deviation, pressure in units of atm
         keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)[0]
         keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
+        #keyparams.Internal_Pressure = keyparams.Surface_Pressure + (keyparams.Depth * keyparams.Gravity * keyparams.Density)/101325.  # Pressure at Depth equals atmospheric pressure plus density times gravity times column height (i.e., depth)
+        #keyparams.Pressure = keyparams.Internal_Pressure
+    ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
+    ModuleTemp.define_ID(m_id)
+    ModuleTemp.activate()
+    ModulePressure = ModuleTemp
+    m_id=m_id+1
+    # end original
+
+    # original:
+    #global ModulePressure
+    global Pressure
+    ModuleTemp = mcmodules.Module()
+    ModuleTemp.define_name('Internal \n Pressure')
+    ModuleTemp.add_input('Surface_Pressure')
+    ModuleTemp.add_input('Depth')
+    ModuleTemp.add_input('Gravity')
+    ModuleTemp.add_input('Density')
+    ModuleTemp.add_output('Pressure') # changed from Surface_Pressure to Pressure
+    #ModuleTemp.add_output('Internal_Pressure')
+    def _execute(self):
+        #mu_p, sigma_p = 0.007, 0.002 # mean and standard deviation, pressure in units of atm
+        #keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)[0]
+        #keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of the water phase diagram is mostly constant
+        mu_p, sigma_p = 0.007, 0.002 # mean and standard deviation, pressure in units of atm
+        keyparams.Surface_Pressure = np.random.normal(mu_p, sigma_p, 1)[0]
+        keyparams.Surface_Pressure = np.clip(keyparams.Surface_Pressure, 0., 5e3) # Limit pressure to the range in which the lower T boundary of 
         keyparams.Internal_Pressure = keyparams.Surface_Pressure + (keyparams.Depth * keyparams.Gravity * keyparams.Density)/101325.  # Pressure at Depth equals atmospheric pressure plus density times gravity times column height (i.e., depth)
         keyparams.Pressure = keyparams.Internal_Pressure
     ModuleTemp.execute = types.MethodType(_execute, ModuleTemp)
@@ -118,6 +170,7 @@ def marsmodules():
     ModuleTemp.activate()
     ModulePressure = ModuleTemp
     m_id=m_id+1
+    # end original    
 
 
 
