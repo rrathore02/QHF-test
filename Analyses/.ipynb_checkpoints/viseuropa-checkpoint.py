@@ -30,27 +30,23 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     ### ===================================================================================== ##
     Depth_Distribution = np.asarray(Depth_Distribution)  
     Pressure_Distribution = np.asarray(Pressure_Distribution)
-    #plt.tight_layout()
     fig, ax = plt.subplots(figsize=(2.00,1.00))
     ax.plot(Pressure_Distribution, -Depth_Distribution, c='black', zorder=10, alpha=1, label='Pressure Profile')
     ax.axvline(542., c='red', ls='--')
     ax.text(542+50, -100000,  '55 MPa', c='red')
     ax.axvline(1480., c='red', ls='--')
     ax.text(1480+50, -100000, '150 MPa', c='red')
-    #
-    #ax.axvline(keyparams.Ice_Thickness, c='lightblue')
     ax.fill_between(x=np.linspace(min(Pressure_Distribution)-50, max(Pressure_Distribution)+50, 50),
                      y1=-keyparams.Ice_Thickness, y2=0, facecolor='lightblue', alpha=0.5, edgecolor='lightblue',label='Ice')
     ax.fill_between(x=np.linspace(min(Pressure_Distribution)-50, max(Pressure_Distribution)+50, 50),
-                     y1=-128_000, y2=-140_000, facecolor='lightgray', alpha=0.5, edgecolor='lightgray', label='Rock')
-                     
+                     y1=-128_000, y2=-140_000, facecolor='lightgray', alpha=0.5, edgecolor='lightgray', label='Rock')         
     ax.set_ylabel('Elevation [m]', fontsize=12)
     ax.set_yticks([0,-20000, -40000, -60000, -80000, -100000, -120000])
     ax.set_ylim(-130000, 0)
     ax.set_xlabel('Pressure [atm]', fontsize=12)
     ax.set_xlim(min(Pressure_Distribution), max(Pressure_Distribution))
     ax.legend(loc='best')
-    plt.show()
+    plt.close()
     
     ### ===================================================================================== ##
     ##   Suitability vs. Depth profile plot
@@ -95,7 +91,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     fig.tight_layout()
     fig.savefig('Figures/Europa_HS-Depth.png')
     fig.savefig('Figures/Europa_HS-Depth.svg')
-    plt.close()
+    plt.show()
 
     ### ======================================================================================= ##
     ##    3D Suitability vs. Temperature vs. Depth scatter plot
@@ -125,7 +121,7 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
     newax.imshow(im)
     fig.savefig('Figures/Europa_3D-Plot.png')
     fig.savefig('Figures/Europa_3D-Plot.svg')
-    plt.close()
+    plt.show()
 
 
 

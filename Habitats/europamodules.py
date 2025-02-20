@@ -83,7 +83,8 @@ def europamodules():
         keyparams.Planet_Mass = keyparams.Planet_Mass_Mstar * keyparams.Stellar_Mass * unitconversion # Planet mass in Earth masses
         #keyparams.Mantle_Composition = [0.7,0.3] # Fe / Si / Mg mass ratio
         keyparams.Gravity= 1.31 # m/s2 surface gravity
-        keyparams.Density = 3018.00   # kg/m3  Bulk Density, from "The Planetary Scientist's Companion", Lodders & Fegley
+        #@keyparams.Density = 3018.00   # kg/m3  Bulk Density, from "The Planetary Scientist's Companion", Lodders & Fegley
+        keyparams.Density = 998.00    # kg/m3 Density of water
         if keyparams.ProbeIndex is not None:        # Is the program sampling multiple locations in the parameter space?
             keyparams.Depth = keyparams.ProbeIndex * 1000. # If so, depth [in meter] is calculated from the probe index
         else:
