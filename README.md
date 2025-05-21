@@ -17,7 +17,9 @@ Use:
 QHF was designed to be modular. 
 Habitat models are provided in the Habitats/ directory.
 Metabolism/Organism models are provided in the Metabolisms/ directory.
-The main QHF.py framework is ideally not modified for individual uses. Instead, the habitat and metabolism modules may be adopted for specific use cases, and global parameters are adjusted in a configuration file that is specified as a command line argument at execution.
+The analysis and visualization of the results are based on modules in the Analyses/ directory.
+
+The main QHF.py framework is ideally not modified for individual uses. Instead, the habitat and metabolism modules may be adopted for specific use cases, and global parameters are adjusted in a configuration file that is specified as a command line argument at execution. 
 
 For example: python QHF.py trappist1e.cfg
 
