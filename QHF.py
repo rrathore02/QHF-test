@@ -10,10 +10,12 @@ import matplotlib.pyplot as plt
 from matplotlib import style
 import matplotlib.patches as patches
 import importlib
-import configparser    # For handling of a configuration file
+import configparser # For handling of a configuration file
 import pdb # Python debugger
 import keyparams
 from mcmodules import Module as Module
+from layout_presets import presets, label_offsets
+
 
 
 #======================================
@@ -39,70 +41,98 @@ from mcmodules import Module as Module
 #================================================================
 # Build and Visualize the Graph
 # Based on https://www.geeksforgeeks.org/visualize-graphs-in-python/
+
+
 class GraphVisualization:
 
     def __init__(self):
-
-        # visual is a list which stores all
-        # the set of edges that constitutes a
-        # graph
         self.visual = []
 
-    # addEdge function inputs the vertices of an
-    # edge and appends it to the visual list
     def addEdge(self, a, b, label):
-        temp = [a, b]
-        self.visual.append(temp)
+        self.visual.append([a, b])
 
-    # In visualize function G is an object of
-    # class Graph given by networkx G.add_edges_from(visual)
-    # creates a graph with a given list
-    # nx.draw_networkx(G) - plots the graph
-    # plt.show() - displays the graph
-    # 'mod_labels' are the NODE labels
-    # 'edge_labels' are the labels for the variable vectors connecting each node. dict where keys = positions, values = strings of the variable names
     def visualize(self):
         G = nx.DiGraph()
         G.add_edges_from(self.visual)
-        pos = nx.spring_layout(G)
-        #Adjust colors: blue for priors (no input parameters), lightblue for the derived values, green for final comparison w metabolism model
-        #node_colors = [prior_node_color if len(Modules[node].input_parameters) == 0 else other_node_color for node in G]
-        node_colors = [prior_node_color if len(Modules[node].input_parameters) == 0 else metabolism_node_color if 'Suitability' in Modules[node].output_parameters else other_node_color for node in G]
-        #node_colors = [ else zero for node in G]
-        if screen: nx.draw_networkx(G,pos, arrows=False,arrowsize=3.0*sf,with_labels=False, width=3*sf,alpha=0.02,edge_color=selected_edgecolor,node_color="white",node_size=70*sf)
-        if screen: nx.draw_networkx(G,pos, arrows=False,arrowsize=3.0*sf,with_labels=False, width=2*sf,alpha=0.05,edge_color=selected_edgecolor,node_color=node_colors,node_size=50*sf)
-        nx.draw_networkx(G,pos, arrows=True,arrowsize=3.0*sf, with_labels=False, width=0.5*sf,alpha=0.7,edge_color=selected_edgecolor,node_color=node_colors,node_size=20*sf)
-        G.edges(data=True)
-        
-        ## this code changes instances of "Surface Temperature/Pressure" to just "Temperature/Pressure" in the edge labels
+
+        # Choose layout spacing and pull offsets for current config
+        preset_name = HabitatShortName.lower()
+        offset_dict = presets.get(preset_name, {})
+        label_dict = label_offsets.get(preset_name, {})
+
+        # Spread out graph layout
+        pos = nx.spring_layout(G, seed=42, k=0.7, scale = 3.0, iterations=150)
+        for node, label in mod_labels.items():
+            normalized_label = label.replace('\n', ' ').strip()
+            x, y = pos[node]
+            dx, dy = offset_dict.get(label, (0.00, 0.00))
+            pos[node] = (x + dx, y + dy)
+
+        # Node color logic
+        node_colors = [
+            prior_node_color if len(Modules[node].input_parameters) == 0 else
+            metabolism_node_color if 'Suitability' in Modules[node].output_parameters else
+            other_node_color for node in G
+        ]
+
+        node_size_val = 12 * sf  # Unified box size
+
+        # Draw background layers if screen is True
+        if screen:
+            nx.draw_networkx(G, pos, arrows=False, arrowsize=3.0 * sf, with_labels=False,
+                            width=3 * sf, alpha=0.02, edge_color=selected_edgecolor,
+                            node_color="white", node_size=70 * sf)
+            nx.draw_networkx(G, pos, arrows=False, arrowsize=3.0 * sf, with_labels=False,
+                            width=2 * sf, alpha=0.05, edge_color=selected_edgecolor,
+                            node_color=node_colors, node_size=50 * sf)
+
+        # Main network draw
+        nx.draw_networkx(G, pos, arrows=True, arrowsize=3.0 * sf, with_labels=False,
+                        width=0.5 * sf, alpha=0.7, edge_color=selected_edgecolor,
+                        node_color=node_colors, node_size=node_size_val)
+
+        # Edge label cleanup
         for idx, varlabel_key in enumerate(edge_labels):
             if edge_labels[varlabel_key] == 'Surface Temperature':
                 edge_labels[varlabel_key] = 'Temperature'
             elif edge_labels[varlabel_key] == 'Surface Pressure':
                 edge_labels[varlabel_key] = 'Pressure'
-        ##
-        
+
         nx.draw_networkx_edge_labels(
             G, pos,
-            edge_labels=edge_labels, label_pos=0.5, alpha=0.7,
-            font_color=selected_edgecolor, font_size=2*sf, font_weight='light',bbox=dict(alpha=0.9,fc=bkgcolor,ec=labelcolor,linewidth=0.1*sf),clip_on=True
+            edge_labels=edge_labels,
+            label_pos=0.4,
+            rotate=False,
+            font_color=selected_edgecolor,
+            font_size=1.6 * sf,
+            font_weight='light',
+            bbox=dict(alpha=0.2, fc=bkgcolor, ec=labelcolor, linewidth=0.1 * sf),
+            clip_on=True
         )
-        pos_lower = {}
-        y_off = -0.1  # offset on the y axis
-        
-        for k, v in pos.items():
-            pos_lower[k] = (v[0], v[1]+y_off+labeloffset)
 
-        nx.draw_networkx_labels(G, pos_lower, mod_labels, font_size=2*sf, font_color=labelcolor,font_weight='light')
-        # https://stackoverflow.com/questions/47094949/labeling-edges-in-networkx
-        plt.title('Connections between Modules',color=labelcolor,fontsize=5,bbox=dict(alpha=0.1,fc=bkgcolor,ec=bkgcolor,linewidth=0.))
-        #plt.tight_layout()
+        # Label placement (below or offset per label)
+        pos_upper = {}
+        for k, v in pos.items():
+            label = mod_labels[int(k)]
+            pos_upper[k] = (v[0], v[1] + 0.05)  # small diagonal offset
+
+        nx.draw_networkx_labels(G, pos_upper, mod_labels,
+                                font_size=1.8 * sf, font_color=labelcolor,
+                                font_weight='light', horizontalalignment='center',verticalalignment="bottom")
+
+        plt.title('Connections between Modules', color=labelcolor, fontsize=5,
+                bbox=dict(alpha=0.1, fc=bkgcolor, ec=bkgcolor, linewidth=0.))
         plt.axis("off")
         ax = plt.gca()
+
         if screen:
-                rect = patches.Rectangle((0., 0.), 1., 1., linewidth=0.2, edgecolor='lightblue', facecolor='none',transform=ax.transAxes)
-                ax.add_patch(rect)
+            rect = patches.Rectangle((0., 0.), 1., 1., linewidth=0.2,
+                                    edgecolor='lightblue', facecolor='none',
+                                    transform=ax.transAxes)
+            ax.add_patch(rect)
+
         return ax
+
 
 
 # Examples for networkx plots:
@@ -232,7 +262,7 @@ edge_labels = {}
 mod_labels={}
 
 for jj in np.arange(nmods):
-    mod_labels[jj]=Modules[jj].name
+    mod_labels[int(jj)]=Modules[jj].name
     print('--------------------------------------------------------------------------------')
     print('Identifying input connections for module ', Modules[jj].name)
 
@@ -319,7 +349,7 @@ node_sizes={}
 
 
 
-fig=plt.figure(figsize=(4.00, 2.00), dpi=400)
+fig=plt.figure(figsize=(12.00, 8.00), dpi=300)
 fig.set_facecolor(bkgcolor)
 fig.set_edgecolor(selected_edgecolor)
 # Add frame:
