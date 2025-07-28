@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
+def sanitize_filename(name):
+    return "".join(c for c in name if c.isalnum() or c in (' ', '_', '-')).rstrip()
+
 def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,BondAlbedo_Distribution,GreenHouse_Distribution,Pressure_Distribution,Depth_Distribution, runid,Suitability_Plot,Variable,HabitatLogo):
     if screen:
         # Scaling factor
@@ -130,8 +133,9 @@ def QHFvisualize(screen,sf,Suitability_Distribution,Temperature_Distribution,Bon
 
     fig.suptitle('Probability Distribution of Key Parameters  '+keyparams.runid, fontsize=13)
 
-    fig.savefig('Figures/'+keyparams.runid+'_Multi-plot.png')
-    fig.savefig('Figures/'+keyparams.runid+'_Multi-plot.svg')
+    safe_runid = sanitize_filename(keyparams.runid)
+    fig.savefig('Figures/' + safe_runid + '_Multi-plot.png')
+    fig.savefig('Figures/' + safe_runid + '_Multi-plot.svg')
     #for ax in axs.flat:
     #    ax.set(xlabel='x-label', ylabel='y-label')
 
