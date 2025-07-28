@@ -5,7 +5,7 @@ import requests
 CURRENT_VERSION = "1.0.0"
 
 # Raw GitHub URL of the latest_version.json file
-VERSION_URL = "https://raw.githubusercontent.com/<your-username>/<your-repo>/main/latest_version.json"
+VERSION_URL = "https://raw.githubusercontent.com/<rrathore02>/<QHF-test>/main/latest_version.json"
 
 def check_for_update():
     try:
